@@ -1,31 +1,49 @@
 <script setup>
 
-import { computed } from 'vue';
-import { formatDate, propsToRefs } from '@/common/utils';
+import { reactive, onMounted, ref, watch } from 'vue';
+import { formatDate, propsToRefs, watchPost } from '@/common/utils';
 
 defineProps(['date']);
 const { date } = propsToRefs();
 
-const days = computed(()=>{
+const days = reactive((new Array(7).fill(null).map(() => new Date)));
 
-    const out=[];
+watch(date, calcDays);
+calcDays();
+
+function calcDays() {
 
     const monday = date.value.snapDayBack(1);
+    if (days[0]?.isSame(monday)) {
+        return;
+    }
 
     for (let i = 0; i < 7; i++) {
         const day = monday.clone();
         day.setDate(monday.getDate() + i);
-        out.push(day);
+        days[i].setTime(day.getTime());
     }
 
-    return out;
+}
 
-});
+const list = ref();
+const activeDateRect = ref({ width: 0, left: 0 });
+watchPost(date, markActiveDate);
+onMounted(markActiveDate);
+
+function markActiveDate() {
+    const rect = list.value.querySelector('.active')?.getBoundingClientRect();
+    if (!rect) {
+        return;
+    }
+    const listRect = list.value.getBoundingClientRect();
+    activeDateRect.value = { width: rect.width, left: rect.left - listRect.left };
+}
 
 </script>
 
 <template>
-    <div class="root relative">
+    <div class="root relative" @wheel="$emit('date', date.addDay($event.deltaY > 0 ? 1 : -1))">
         <div class="round-button" @click="$emit('date', date.addDay(-1))">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                 <path fill="none" d="M0 0h24v24H0z" />
@@ -33,7 +51,9 @@ const days = computed(()=>{
                     fill="rgba(115,174,234,1)" />
             </svg>
         </div>
-        <ul class="w-full flex py-3 px-[50px]">
+        <ul ref="list" class="w-full flex py-3 px-[50px]">
+            <li class="absolute z-[-1] top=0 h-[32px] bg-[color:var(--bg-color)] rounded-xl transition-all"
+                :style="{left: activeDateRect.left + 'px', width: activeDateRect.width + 'px'}"></li>
             <li
                 v-for="day of days"
                 :key="day"
@@ -42,7 +62,12 @@ const days = computed(()=>{
                     @click="$emit('date', day)"
                     v-html="formatDate(day)"
                     :class="{ active: day.isSame(date)}"
-                    class="block px-3 py-1 rounded-xl cursor-pointer hover:underline hover:[&.active]:no-underline [&.active]:bg-[color:var(--bg-color)] [&.active]:text-white">
+                    class="
+                        block px-3 py-1 rounded-xl cursor-pointer 
+                        hover:underline hover:[&.active]:no-underline 
+                        [&.active]:bg2-[color:var(--bg-color)] 
+                        [&.active]:text-white transition-colors duration-500
+                    ">
                 </a>
             </li>
         </ul>
