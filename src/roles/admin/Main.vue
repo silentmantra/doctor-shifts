@@ -4,10 +4,11 @@ import { ref, watch, computed, onMounted } from 'vue';
 import { RouterView, RouterLink, useRouter } from 'vue-router';
 
 import { getScrollbarWidth, watchPost, formatHour, propsToRefs } from '@/common/utils';
+
 import Main from '@/components/Main.vue';
 import Checkbox from '@/components/Checkbox.vue';
-import { useUserStore } from '@/stores/user';
 import DateSlider from './DateSlider.vue';
+import { useUserStore } from '@/stores/user';
 
 const router = useRouter();
 const store = useUserStore();
@@ -194,7 +195,7 @@ function toggleHour(e, doctor) {
 
         </template>
 
-        <table class="shifts">
+        <table>
             <tr v-for="doctor of data.list" :key="doctor.id"
                 class="cursor-pointer hover:bg-sky-200">
                 <td ref="doctorTitle" class="whitespace-nowrap px-2">

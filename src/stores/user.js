@@ -1,6 +1,5 @@
-import { ref, computed, reactive, watch } from 'vue'
-import { defineStore } from 'pinia'
-import { DOMDirectiveTransforms } from '@vue/compiler-dom';
+import { computed, reactive, watch } from 'vue';
+import { defineStore } from 'pinia';
 
 export const useUserStore = defineStore('user', () => {
 

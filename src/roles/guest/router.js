@@ -1,3 +1,3 @@
-import { createRouter } from '../../common/utils';
+import { createRouter } from '@/common/utils';
 
 export const router = createRouter();
