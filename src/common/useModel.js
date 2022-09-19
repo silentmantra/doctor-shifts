@@ -1,4 +1,4 @@
-import { computed, getCurrentInstance } from 'vue';
+import { computed, unref, getCurrentInstance } from 'vue';
 
 export function useModel() {
 
@@ -6,7 +6,7 @@ export function useModel() {
 
     const value = computed({
         get() {
-            return self.props.modelValue;
+            return unref(self.props.modelValue);
         },
         set(value) {
             return self.emit('update:modelValue', value);

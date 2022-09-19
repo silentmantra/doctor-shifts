@@ -9,7 +9,9 @@ export const useUserStore = defineStore('user', () => {
 
     const users = computed(() => [{ id: 1, title: 'Координатор' }, ...doctors]);
 
-    watch(doctors, () => localStorage.doctors = JSON.stringify(doctors));
+    watch(doctors, doctors => localStorage.doctors = JSON.stringify(doctors));
+
+    return { doctors, getDoctor, generate, clear, users, addRange, removeRange };
 
     function getDoctor(id) {
         return typeof id === 'number' ? doctors.find(doctor => doctor.id === id) : id;
@@ -160,7 +162,5 @@ export const useUserStore = defineStore('user', () => {
     function clear() {
         doctors.splice(0, doctors.length);
     }
-
-    return { doctors, generate, clear, users, addRange, removeRange };
 
 });

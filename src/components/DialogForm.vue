@@ -2,8 +2,7 @@
 
 import { ref, onMounted } from 'vue';
 
-const props = defineProps(['title', 'onSubmit', 'submitLabel', 'closable', 'open']);
-const emit = defineEmits(['close', 'submit']);
+const props = defineProps('title onSubmit submitLabel closable'.words);
 
 const dialog = ref();
 const form = ref();
@@ -24,9 +23,9 @@ function close(e) {
 
 </script>
 <template>
-    <dialog ref="dialog" @click="close" @close="emit('close')">
+    <dialog ref="dialog" @click="close" @close="$emit('close')">
         <form ref="form" @keyup="isValid = form.checkValidity()" @change="isValid = form.checkValidity()"
-            @submit.prevent="emit('submit'); dialog.close()">
+            @submit.prevent="$emit('submit'); dialog.close()">
             <h1>{{ props.title }}</h1>
             <div>
                 <div class="mb-3">
@@ -56,7 +55,7 @@ function close(e) {
     }
 
     :deep {
-        input, select, button { @apply 
+        input:not([type=checkbox]), select, button { @apply 
             w-full
         }
     }

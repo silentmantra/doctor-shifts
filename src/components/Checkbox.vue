@@ -1,28 +1,16 @@
 <script setup>
 
 import { useModel } from '@/common/useModel';
-defineProps(['modelValue']);
+defineProps('modelValue'.words);
 const value = useModel();
 
 </script>
 
 <template>
-    <div class="inline-block">
-        <label>
-            <input type="checkbox" v-model="value" />
+    <div class="inline-block relative cursor-pointer">
+        <label class="block hover:underline pl-[20px]">
+            <input class="left-0 absolute scale-125 top-[7px] mr-2" type="checkbox" v-model="value" />
             <slot></slot>
         </label>
     </div>
 </template>
-
-<style scoped>
-
-    label { @apply
-        cursor-pointer
-    }
-
-    input[type=checkbox] { @apply
-        w-auto
-        mr-2
-    }
-</style>

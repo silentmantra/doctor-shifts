@@ -3,7 +3,7 @@
 import { reactive, onMounted, ref, watch } from 'vue';
 import { formatDate, propsToRefs, watchPost } from '@/common/utils';
 
-defineProps(['date']);
+defineProps('date'.words);
 const { date } = propsToRefs();
 
 const DAY_COUNT = 7;

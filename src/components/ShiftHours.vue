@@ -2,13 +2,25 @@
 
 import { ref, watch, computed, onMounted } from 'vue';
 import { overlaps, getScrollbarWidth, watchPost, formatHour, propsToRefs } from '@/common/utils';
-import DynamicTeleport from '@/components/DynamicTeleport.vue';
+import DynamicTeleport from './DynamicTeleport.vue';
+import Checkbox from './Checkbox.vue';
 import { useUserStore } from '@/stores/user';
 
-defineProps('data'.words);
-const { data } = propsToRefs();
+defineProps('data selectable'.words);
+const { data, selectable } = propsToRefs();
 
 const store = useUserStore();
+
+const someSelected = computed({
+    get: () => data.value.list.some(schedule => schedule.selected),
+    set: val => data.value.list.forEach(schedule => schedule.selected = false)
+});
+
+const storedSelection = ref([]);
+
+watch(() => data.value.list.filter('selected').map('doctorId'), value => {
+    storedSelection.value = value;
+})
 
 const doctorTitle = ref();
 const hoursTitle = ref();
@@ -54,7 +66,12 @@ function toggleHour(schedule) {
 
         <table class="w-full">
             <tr>
-                <td ref="hoursTitle"></td>
+                <td ref="hoursTitle">
+                    <Checkbox v-if="someSelected" v-model="someSelected" class="ml-2">
+                        <span v-if="someSelected">Сбросить</span>
+                        <span v-else>Восстановить</span>
+                    </Checkbox>
+                </td>
                 <td class="relative">
                     <ul class="flex border-b border-gray-200">
                         <li class="py-2 w-0 flex-grow relative text-center transition-colors" v-for="n in 24"
@@ -74,7 +91,12 @@ function toggleHour(schedule) {
     <table>
         <tr v-for="schedule of data.list" :key="schedule.id"
             class="cursor-pointer hover:bg-sky-200">
-            <td ref="doctorTitle" class="whitespace-nowrap px-2" v-html="schedule.title"></td>
+            <td ref="doctorTitle" class="whitespace-nowrap px-2">
+                <Checkbox class="!block" v-if="selectable" v-model="schedule.selected"><span
+                        v-html="schedule.title"></span>
+                </Checkbox>
+                <span v-else v-html="schedule.title"></span>
+            </td>
             <td @mousemove="onMousemove" @click="toggleHour(schedule)"
                 class="group relative w-full overflow-hidden">
                 <ul>
@@ -88,7 +110,8 @@ function toggleHour(schedule) {
                 <div style="width: calc(100% / 24)"
                     :style="{left: hoverPos + 'px'}"
                     class="top-0 text-center absolute group-hover:block hidden h-[100%] border border-gray-300 bg-[rgba(255,255,0,.3)]">
-                    <span class="text-3xl relative top-[-7px] text-[rgba(0,0,0,.5)]">{{ formatHour(hoverHour) }}</span>
+                    <span class="hidden text-3xl relative top-[-7px] text-[rgba(0,0,0,.5)]">{{ formatHour(hoverHour)
+                    }}</span>
                 </div>
             </td>
         </tr>

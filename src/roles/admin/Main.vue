@@ -1,12 +1,12 @@
 <script setup>
 
-import { ref, watch, computed } from 'vue';
+import { ref, reactive, watch, computed, toRef } from 'vue';
 import { RouterView, RouterLink, useRouter } from 'vue-router';
 
 import { overlaps, propsToRefs } from '@/common/utils';
 
-import Main from '@/components/Main.vue';
-import Checkbox from '@/components/Checkbox.vue';
+import Layout from '@/components/Layout.vue';
+import CheckboxSelect from '@/components/CheckboxSelect.vue';
 import DateSlider from './DateSlider.vue';
 import ShiftHours from '@/components/ShiftHours.vue';
 import { useUserStore } from '@/stores/user';
@@ -17,10 +17,11 @@ const store = useUserStore();
 const search = ref(localStorage.search || '');
 watch(search, val => localStorage.search = val);
 
-const showAllDoctors = ref(false);
+const props = defineProps('currentDate displayMode selection'.words);
+const { currentDate, displayMode, selection } = propsToRefs();
 
-defineProps(['currentDate']);
-const { currentDate } = propsToRefs();
+watch(displayMode, displayMode => router.push({ params: { displayMode } }));
+watch(selection, selection => router.push({ params: { selection: selection.join(',') } }));
 
 function changeDate(date) {
     router.push({ name: 'main', params: { date: date.format('shortDate').replaceAll('.', '-') } });
@@ -69,13 +70,30 @@ const data = computed(() => {
             continue;
         }
 
-        if (current.length || showAllDoctors.value) {
-            list.push({
+        if (
+            (current.length && !displayMode.value) ||
+            displayMode.value === 'all' ||
+            (displayMode.value === 'selected' && selection.includes(doctor.id))
+        ) {
+            list.push(reactive({
                 doctorId: doctor.id,
                 date: currentDate.value,
                 title: doctor.title,
-                shifts: current
-            });
+                shifts: current,
+                selected: computed({
+                    get: () => selection.includes(doctor.id),
+                    set: val => {
+                        if (val) {
+                            if (selection.length >= 10) {
+                                selection.shift();
+                            }
+                            selection.push(doctor.id);
+                            return;
+                        }
+                        selection.remove(doctor.id);
+                    }
+                })
+            }));
         }
     }
 
@@ -90,7 +108,7 @@ function show(shifts) {
 </script>
     
 <template>
-    <Main>
+    <Layout>
         <template #header>
             <div class="[&>*]:mr-3">
                 <RouterLink :to="{name:'add-doctor'}"><button>Добавить врача</button>
@@ -104,15 +122,16 @@ function show(shifts) {
 
             <div class="mt-2 [&>*]:mr-3">
                 <input class="py-1" v-model="search" placeholder="Фильтр" />
-                <Checkbox v-model="showAllDoctors">Показывать всех</Checkbox>
+                <CheckboxSelect v-model="displayMode" :items="{all: 'Показать всех', selected: 'Показать выбранных'}" />
+                <button class="px-3 py-1 ml-5">Редактировать выбранных</button>
             </div>
 
             <DateSlider :date="currentDate" @date="changeDate" />
 
         </template>
 
-        <ShiftHours v-bind="{ data, currentDate }" />
+        <ShiftHours v-bind="{ data, selectable:true }" />
 
-    </Main>
+    </Layout>
     <RouterView />
 </template>

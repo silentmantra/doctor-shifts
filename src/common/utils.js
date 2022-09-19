@@ -1,4 +1,4 @@
-import { watch, toRef, getCurrentInstance } from 'vue';
+import { watch, toRef, reactive, getCurrentInstance } from 'vue';
 import { createRouter as createVueRouter, createWebHistory } from 'vue-router';
 
 export function overlaps(shift, from, to) {
@@ -61,6 +61,13 @@ export function propsToRefs() {
     const out = {};
 
     for (const name in props) {
+        if (
+            Array.isArray(props[name]) 
+            //props[name]?.__proto__.constructor.name === 'Object'
+        ) {
+            out[name] = reactive(props[name]);
+            continue;
+        }
         out[name] = toRef(props, name);
     }
 

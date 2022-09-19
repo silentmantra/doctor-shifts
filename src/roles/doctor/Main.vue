@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router';
 
 import { overlaps, propsToRefs } from '@/common/utils';
 
-import Main from '@/components/Main.vue';
+import Layout from '@/components/Layout.vue';
 import ShiftHours from '@/components/ShiftHours.vue';
 import WeekSlider from './WeekSlider.vue';
 import { useUserStore } from '@/stores/user';
@@ -16,7 +16,7 @@ const store = useUserStore();
 
 const doctor = reactive(store.doctors.find(doctor => doctor.id === parseInt(localStorage.userId)));
 
-defineProps(['currentDate']);
+defineProps('currentDate'.words);
 const { currentDate } = propsToRefs();
 
 function changeDate(date) {
@@ -51,7 +51,7 @@ const data = computed(() => {
 </script>
     
 <template>
-    <Main>
+    <Layout>
 
         <template #header>
             <h1 class="text-2xl mt-1">{{ doctor.title }}</h1>
@@ -61,7 +61,7 @@ const data = computed(() => {
             <WeekSlider :date="currentDate" @date="changeDate" />
         </template>
 
-        <ShiftHours v-bind="{ data, currentDate }" />
+        <ShiftHours v-bind="{ data }" />
 
-    </Main>
+    </Layout>
 </template>
