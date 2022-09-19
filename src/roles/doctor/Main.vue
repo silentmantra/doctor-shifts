@@ -9,7 +9,7 @@ import Layout from '@/components/Layout.vue';
 import ShiftHours from '@/components/ShiftHours.vue';
 import WeekSlider from './WeekSlider.vue';
 import { useUserStore } from '@/stores/user';
-import { formatDate } from '../../common/utils';
+import { formatDate, formatWeek } from '../../common/utils';
 
 const router = useRouter();
 const store = useUserStore();
@@ -28,21 +28,31 @@ const data = computed(() => {
     const list = [];
     const hours = new Array(24).fill(true);
 
-    const from = currentDate.value;
+    const monday = new Date().snapDayBack(1);
 
     //todo: optimize since the doctor's shifts are sorted
-    from.eachDayOf(7, from => {
 
-        const to = from.addDay();
+    // get 4 weeks of shifts for editing from this week's monday
+    monday.eachWeekOf(4, from => {
 
         list.push({
-            doctorId: doctor.id,
-            date: from,
-            title: formatDate(from),
-            shifts: doctor.shifts.filter(shift => overlaps(shift, from, to))
+            group: formatWeek(from)
         });
 
-    });
+        from.eachDayOf(7, from => {
+
+            const to = from.addDay();
+
+            list.push({
+                doctorId: doctor.id,
+                date: from,
+                title: formatDate(from),
+                shifts: doctor.shifts.filter(shift => overlaps(shift, from, to))
+            });
+
+        });
+
+    })
 
     return { list, hours };
 
@@ -57,9 +67,9 @@ const data = computed(() => {
             <h1 class="text-2xl mt-1">{{ doctor.title }}</h1>
         </template>
 
-        <template #fixed>
+        <!--<template #fixed>
             <WeekSlider :date="currentDate" @date="changeDate" />
-        </template>
+        </template>-->
 
         <ShiftHours v-bind="{ data }" />
 

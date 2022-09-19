@@ -889,6 +889,18 @@ Date.prototype.eachDayOf = function (len, cb) {
     return out;
 };
 
+Date.prototype.eachWeekOf = function (len, cb) {
+
+    var out = [];
+
+    for (var i = 0; i < len; i++) {
+        var dd = this.addWeek(i);
+        out.push(cb(dd));
+    }
+
+    return out;
+};
+
 
 Date.prototype.eachDayTo = function (dt, cb) {
 

@@ -40,6 +40,7 @@ watchPost(data, resizeTitle);
 
 const hoverPos = ref(0);
 const hoverHour = ref(0);
+const hourWidth=ref(0);
 
 function onMousemove(e) {
     const { left } = e.currentTarget.getBoundingClientRect();
@@ -74,11 +75,23 @@ function toggleHour(schedule) {
                 </td>
                 <td class="relative">
                     <ul class="flex border-b border-gray-200">
-                        <li class="py-2 w-0 flex-grow relative text-center transition-colors" v-for="n in 24"
-                            :class=" !data.hours[n - 1] ? 'bg-red-500 text-white' : '' ">{{ formatHour(n - 1) }}
+                        <li class="w-0 flex-grow relative text-center" v-for="(l, n) in 24"
+                            >
                             <div
-                                class="absolute left-0 top-0 h-[2160px] border-l border-gray-200 pointer-events-none">
+                                class="absolute z-0 w-full left-0 top-0 h-[2160px] border-l pointer-events-none"
+                                :class="{
+                                    'border-gray-200': n % 6 !== 0,
+                                    'border-gray-300': n % 6 === 0,
+                                    'bg-indigo-50': n >= 0 && n < 6, 
+                                    'bg-green-50': n >= 6 && n < 12,
+                                    'bg-yellow-50': n >= 12 && n < 18,
+                                    'bg-orange-50' : n >= 18 && n < 24
+                                }"    
+                            >
                             </div>
+                            <div class="relative py-2 transition-colors border-b"
+                            :class=" !data.hours[n] ? 'bg-red-500 text-white' : '' "
+                            >{{ formatHour(n) }}</div>
                         </li>
                     </ul>
                 </td>
@@ -88,32 +101,43 @@ function toggleHour(schedule) {
 
     </DynamicTeleport>
 
-    <table>
+    <table class="relative z-10">
         <tr v-for="schedule of data.list" :key="schedule.id"
-            class="cursor-pointer hover:bg-sky-200">
-            <td ref="doctorTitle" class="whitespace-nowrap px-2">
-                <Checkbox class="!block" v-if="selectable" v-model="schedule.selected"><span
-                        v-html="schedule.title"></span>
-                </Checkbox>
-                <span v-else v-html="schedule.title"></span>
-            </td>
-            <td @mousemove="onMousemove" @click="toggleHour(schedule)"
-                class="group relative w-full overflow-hidden">
-                <ul>
-                    <li class="top-[50%] -mt-[10px] absolute bg-emerald-400 rounded-lg h-[20px]"
-                        v-for="shift of schedule.shifts" :key="shift"
-                        :style="{
-                            left: 'calc(' + shift.start.dayPercent(schedule.date, 2) + '% + 5px)',
-                            right: 'calc(' + (100 - shift.stop.dayPercent(schedule.date)).toFixed(2) + '% + 5px)'
-                        }"></li>
-                </ul>
-                <div style="width: calc(100% / 24)"
-                    :style="{left: hoverPos + 'px'}"
-                    class="top-0 text-center absolute group-hover:block hidden h-[100%] border border-gray-300 bg-[rgba(255,255,0,.3)]">
-                    <span class="hidden text-3xl relative top-[-7px] text-[rgba(0,0,0,.5)]">{{ formatHour(hoverHour)
-                    }}</span>
-                </div>
-            </td>
+            class="first:border-t-0"
+            :class="{
+                'cursor-pointer hover:bg-sky-200': !schedule.group,
+                'border-t border-t-gray-300 border-b border-b-gray-300': schedule.group
+            }">
+            <template v-if="schedule.group">
+                <td colspan="2">
+                    <div class="relative text-center bg-white py-2" v-html="schedule.group"></div>
+                </td>
+            </template>
+            <template v-else>
+                <td ref="doctorTitle" class="whitespace-nowrap px-2">
+                    <Checkbox class="!block" v-if="selectable" v-model="schedule.selected"><span
+                            v-html="schedule.title"></span>
+                    </Checkbox>
+                    <span v-else v-html="schedule.title"></span>
+                </td>
+                <td @mousemove="onMousemove" @click="toggleHour(schedule)"
+                    class="group relative w-full overflow-hidden">
+                    <ul>
+                        <li class="top-[50%] -mt-[10px] absolute bg-emerald-400 rounded-lg h-[20px]"
+                            v-for="shift of schedule.shifts" :key="shift"
+                            :style="{
+                                left: 'calc(' + shift.start.dayPercent(schedule.date, 2) + '% + 5px)',
+                                right: 'calc(' + (100 - shift.stop.dayPercent(schedule.date)).toFixed(2) + '% + 5px)'
+                            }"></li>
+                    </ul>
+                    <div style="width: calc(100% / 24)"
+                        :style="{left: hoverPos + 'px'}"
+                        class="top-0 text-center absolute group-hover:block hidden h-[100%] border border-gray-300 bg-[rgba(255,255,0,.3)]">
+                        <span class="hidden text-3xl relative top-[-7px] text-[rgba(0,0,0,.5)]">{{ formatHour(hoverHour)
+                        }}</span>
+                    </div>
+                </td>
+            </template>
         </tr>
         <tr>
             <td>&nbsp;</td>
