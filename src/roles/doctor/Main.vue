@@ -1,23 +1,20 @@
 <script setup>
 
-import { ref, watch, computed, onMounted } from 'vue';
+import { ref, reactive, watch, computed, onMounted } from 'vue';
 import { RouterView, RouterLink, useRouter } from 'vue-router';
 
 import { overlaps, getScrollbarWidth, watchPost, formatHour, propsToRefs } from '@/common/utils';
 
 import Main from '@/components/Main.vue';
-import Checkbox from '@/components/Checkbox.vue';
-import DateSlider from './DateSlider.vue';
-import ShiftHours from '@/components/ShiftHours.vue';
+import WeekSlider from './WeekSlider.vue';
 import { useUserStore } from '@/stores/user';
+import { formatDate } from '../../common/utils';
 
 const router = useRouter();
 const store = useUserStore();
 
-const search = ref(localStorage.search || '');
-watch(search, val => localStorage.search = val);
-
-const showAllDoctors = ref(false);
+const doctorId = parseInt(localStorage.userId);
+const doctor = reactive(store.doctors.find(doctor => doctor.id === doctorId));
 
 defineProps(['currentDate']);
 const { currentDate } = propsToRefs();
@@ -29,54 +26,22 @@ function changeDate(date) {
 const data = computed(() => {
 
     const list = [];
-    const hours = new Array(24);
+    const hours = new Array(24).fill(true);
 
     const from = currentDate.value;
-    const to = from.addDay();
 
-    for (const doctor of store.doctors) {
+    //todo: optimize since the doctor's shifts are sorted
+    from.eachDayOf(7, from => {
 
-        const current = [];
+        const to = from.addDay();
 
-        for (const shift of doctor.shifts) {
+        list.push({
+            id: from.getTime(),
+            title: formatDate(from),
+            shifts: doctor.shifts.filter(shift => overlaps(shift, from, to))
+        });
 
-            if (!overlaps(shift, from, to)) {
-                continue;
-            }
-
-            current.push(shift);
-
-            const hour = from.clone();
-
-            // mark allocated hours
-            for (let i = 0; i < 24; i++) {
-
-                if (hours[i]) {
-                    continue;
-                }
-
-                hour.setHours(i);
-                const range = new DateRange(shift.start, shift.stop);
-                if (range.includes(hour, hour.addHour())) {
-                    hours[i] = { doctor, shift };
-                }
-
-            }
-
-        }
-
-        if (search.value && !doctor.title.toLowerCase().includes(search.value.toLowerCase())) {
-            continue;
-        }
-
-        if (current.length || showAllDoctors.value) {
-            list.push({
-                id: doctor.id,
-                title: doctor.title,
-                shifts: current
-            });
-        }
-    }
+    });
 
     return { list, hours };
 
@@ -132,23 +97,14 @@ function toggleHour(e, doctor) {
     
 <template>
     <Main>
+
         <template #header>
-            <div class="[&>*]:mr-3">
-                <RouterLink :to="{name:'add-doctor'}"><button>Добавить врача</button>
-                </RouterLink>
-                <button @click="store.generate()">Сгенерировать</button>
-                <button @click="store.clear()">Очистить</button>
-            </div>
+            <h1 class="text-2xl mt-1">{{ doctor.title }}</h1>
         </template>
 
         <template #fixed>
 
-            <div class="mt-2 [&>*]:mr-3">
-                <input class="py-1" v-model="search" placeholder="Фильтр" />
-                <Checkbox v-model="showAllDoctors">Показывать всех</Checkbox>
-            </div>
-
-            <DateSlider :date="currentDate" @date="changeDate" />
+            <WeekSlider :date="currentDate" @date="changeDate" />
 
             <table class="w-full">
                 <tr>
@@ -173,20 +129,19 @@ function toggleHour(e, doctor) {
         <table>
             <tr v-for="doctor of data.list" :key="doctor.id"
                 class="cursor-pointer hover:bg-sky-200">
-                <td ref="doctorTitle" class="whitespace-nowrap px-2">
-                    <RouterLink :to="{name:'doctor', params:{id:doctor.id}}">{{ doctor.title }}</RouterLink>
+                <td ref="doctorTitle" class="whitespace-nowrap px-2" v-html="doctor.title">
                 </td>
                 <td @mousemove="onMousemove" @click="toggleHour($event, doctor)"
                     class="group relative w-full overflow-hidden">
                     <ul class="hidden flex border-b border-gray-200">
-                            <li class="py-2 w-0 flex-grow relative text-center transition-colors" v-for="n in 24"
-                                @click="json(data.hours[n-1])"
-                                :class=" !data.hours[n - 1] ? 'bg-red-500 text-white' : '' ">{{ formatHour(n - 1) }}
-                                <div
-                                    class="absolute left-0 top-0 h-[2160px] border-l border-gray-200 pointer-events-none">
-                                </div>
-                            </li>
-                        </ul>
+                        <li class="py-2 w-0 flex-grow relative text-center transition-colors" v-for="n in 24"
+                            @click="json(data.hours[n-1])"
+                            :class=" !data.hours[n - 1] ? 'bg-red-500 text-white' : '' ">{{ formatHour(n - 1) }}
+                            <div
+                                class="absolute left-0 top-0 h-[2160px] border-l border-gray-200 pointer-events-none">
+                            </div>
+                        </li>
+                    </ul>
                     <ul>
                         <li class="top-[50%] -mt-[10px] absolute bg-emerald-400 rounded-lg h-[20px]"
                             v-for="shift of doctor.shifts" :key="shift"
@@ -198,7 +153,8 @@ function toggleHour(e, doctor) {
                     <div style="width: calc(100%/24)"
                         :style="{left: hoverPos + 'px'}"
                         class="top-0 text-center absolute group-hover:block hidden h-[100%] border border-gray-300 bg-[rgba(255,255,0,.3)]">
-                        <span class="text-3xl relative top-[-7px] text-[rgba(0,0,0,.5)]">{{ formatHour(hoverHour) }}</span>
+                        <span class="text-3xl relative top-[-7px] text-[rgba(0,0,0,.5)]">{{ formatHour(hoverHour)
+                        }}</span>
                     </div>
                 </td>
             </tr>

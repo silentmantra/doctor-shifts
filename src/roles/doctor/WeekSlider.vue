@@ -1,28 +1,42 @@
 <script setup>
 
 import { reactive, onMounted, ref, watch } from 'vue';
-import { formatDate, propsToRefs, watchPost } from '@/common/utils';
+import { formatWeek, propsToRefs, watchPost } from '@/common/utils';
 
 defineProps(['date']);
 const { date } = propsToRefs();
 
-const DAY_COUNT = 7;
+const WEEK_COUNT = 4;
 
-const days = reactive((new Array(DAY_COUNT).fill(null).map(() => new Date)));
+const days = reactive((new Array(WEEK_COUNT).fill(null).map(() => new Date)));
 
 watch(date, calcDays);
 calcDays();
 
 function calcDays() {
 
-    const monday = date.value.snapDayBack(1);
-    if (days[0].isSame(monday)) {
+    const monday = Date.Today().snapDayBack(1);
+
+    let start = monday.clone();
+    let current;
+
+    if (date.value > monday) {
+        while (date.value > (current = start.addWeek(4))) {
+            start = current;
+        }
+    } else {
+        while (date.value < (current = start.addWeek(-4))) {
+            start = current;
+        }
+    }
+
+    if (days[0].isSame(start)) {
         return;
     }
 
-    for (let i = 0; i < DAY_COUNT; i++) {
-        const day = monday.clone();
-        days[i].setTime(day.addDay(i).getTime());
+    for (let i = 0; i < WEEK_COUNT; i++) {
+        const day = start.clone();
+        days[i].setTime(day.addWeek(i).getTime());
     }
 
 }
@@ -61,7 +75,7 @@ function markActiveDate() {
                 class="flex-grow text-center">
                 <a
                     @click="$emit('date', day)"
-                    v-html="formatDate(day)"
+                    v-html="formatWeek(day)"
                     :class="{ active: day.isSame(date)}"
                     class="
                         block px-3 py-1 rounded-xl cursor-pointer 

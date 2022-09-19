@@ -1,6 +1,28 @@
 import { watch, toRef, getCurrentInstance } from 'vue';
 import { createRouter as createVueRouter, createWebHistory } from 'vue-router';
 
+export function overlaps(shift, from, to) {
+
+    if (shift.start >= from && shift.start < to) {
+        return true;
+    }
+
+    if (shift.stop > from && shift.stop <= to) {
+        return true;
+    }
+
+    if (shift.start >= from && shift.stop <= to) {
+        return true;
+    }
+
+    if (from >= shift.start && to <= shift.stop) {
+        return true;
+    }
+
+    return false;
+
+}
+
 export function createRouter(...routes) {
 
     const router = createVueRouter({
@@ -53,14 +75,23 @@ export function watchDeepPost(...args) {
     return watch(...args, { deep: true, flush: 'post' });
 }
 
+function formatMonthDay(date) {
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return day + '.' + month;
+}
+
+export function formatWeek(date) {
+    const monday = date.snapDayBack(1);
+    return '<b>' + formatMonthDay(monday) + ' - ' + formatMonthDay(monday.addDays(6));
+}
+
 const weekdays = 'Понедельник Вторник Среда Четверг Пятница Суббота Воскресенье'.match(/[^\s]+/g);
 
 export function formatDate(date) {
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
     let index = date.getDay() - 1;
     index === -1 && (index = 6);
-    return '<b>' + day + '.' + month + '</b> ' + weekdays[index];
+    return '<b>' + formatMonthDay(date) + '</b> ' + weekdays[index];
 }
 
 export function formatHour(date) {
