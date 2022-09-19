@@ -37,7 +37,7 @@ function onMousemove(e) {
     hoverPos.value = hoverHour.value * width;
 }
 
-function toggleHour(e, schedule) {
+function toggleHour(schedule) {
 
     const from = schedule.date.clone();
     from.setHours(hoverHour.value);
@@ -75,7 +75,7 @@ function toggleHour(e, schedule) {
         <tr v-for="schedule of data.list" :key="schedule.id"
             class="cursor-pointer hover:bg-sky-200">
             <td ref="doctorTitle" class="whitespace-nowrap px-2" v-html="schedule.title"></td>
-            <td @mousemove="onMousemove" @click="toggleHour($event, schedule)"
+            <td @mousemove="onMousemove" @click="toggleHour(schedule)"
                 class="group relative w-full overflow-hidden">
                 <ul>
                     <li class="top-[50%] -mt-[10px] absolute bg-emerald-400 rounded-lg h-[20px]"
