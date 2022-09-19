@@ -128,24 +128,20 @@ function json(what) {
 }
 
 const hoverPos = ref(0);
+const hoverHour = ref(0);
 
 function onMousemove(e) {
     const { left } = e.currentTarget.getBoundingClientRect();
     const offset = e.pageX - left;
     const width = e.currentTarget.offsetWidth / 24;
-    const index = Math.floor(offset / width);
-    hoverPos.value = index * width;
+    hoverHour.value = Math.floor(offset / width);
+    hoverPos.value = hoverHour.value * width;
 }
 
 function toggleHour(e, doctor) {
 
-    const { left } = e.currentTarget.getBoundingClientRect();
-    const offset = e.pageX - left;
-    const width = e.currentTarget.offsetWidth / 24;
-    const hour = Math.floor(offset / width);
-
     const from = currentDate.value.clone();
-    from.setHours(hour);
+    from.setHours(hoverHour.value);
     const to = from.addHour();
 
     const allocated = doctor.shifts.some(shift => overlaps(shift, from, to));
@@ -180,7 +176,7 @@ function toggleHour(e, doctor) {
                     <td ref="hoursTitle"></td>
                     <td class="relative">
                         <ul class="flex border-b border-gray-200">
-                            <li class="py-2 w-0 flex-grow relative text-center" v-for="n in 24"
+                            <li class="py-2 w-0 flex-grow relative text-center transition-colors" v-for="n in 24"
                                 @click="json(data.hours[n-1])"
                                 :class=" !data.hours[n - 1] ? 'bg-red-500 text-white' : '' ">{{ formatHour(n - 1) }}
                                 <div
@@ -211,9 +207,10 @@ function toggleHour(e, doctor) {
                                 right: 'calc(' + (100 - shift.stop.dayPercent(currentDate)).toFixed(2) + '% + 5px)'
                             }"></li>
                     </ul>
-                    <div style="top:0; width: calc(100%/24)"
+                    <div style="width: calc(100%/24)"
                         :style="{left: hoverPos + 'px'}"
-                        class="absolute group-hover:block hidden h-[100%] border border-sky-300 bg-[rgba(255,255,0,.3)]">
+                        class="top-0 text-center absolute group-hover:block hidden h-[100%] border border-gray-300 bg-[rgba(255,255,0,.3)]">
+                        <span class="text-3xl relative top-[-7px] text-[rgba(0,0,0,.5)]">{{ formatHour(hoverHour) }}</span>
                     </div>
                 </td>
             </tr>
