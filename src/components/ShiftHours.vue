@@ -40,7 +40,6 @@ watchPost(data, resizeTitle);
 
 const hoverPos = ref(0);
 const hoverHour = ref(0);
-const hourWidth=ref(0);
 
 function onMousemove(e) {
     const { left } = e.currentTarget.getBoundingClientRect();
@@ -57,7 +56,7 @@ function toggleHour(schedule) {
     const to = from.addHour();
 
     const allocated = schedule.shifts.some(shift => overlaps(shift, from, to));
-    allocated ? store.removeRange(schedule.doctorId, from, to) : store.addRange(schedule.doctorId, from, to);
+    store[allocated ? 'removeRange' : 'addRange'](schedule.doctorId, from, to);
 
 }
 
@@ -75,8 +74,7 @@ function toggleHour(schedule) {
                 </td>
                 <td class="relative">
                     <ul class="flex border-b border-gray-200">
-                        <li class="w-0 flex-grow relative text-center" v-for="(l, n) in 24"
-                            >
+                        <li class="w-0 flex-grow relative text-center" v-for="(l, n) in 24">
                             <div
                                 class="absolute z-0 w-full left-0 top-0 h-[2160px] border-l pointer-events-none"
                                 :class="{
@@ -86,12 +84,10 @@ function toggleHour(schedule) {
                                     'bg-green-50': n >= 6 && n < 12,
                                     'bg-yellow-50': n >= 12 && n < 18,
                                     'bg-orange-50' : n >= 18 && n < 24
-                                }"    
-                            >
+                                }">
                             </div>
                             <div class="relative py-2 transition-colors border-b"
-                            :class=" !data.hours[n] ? 'bg-red-500 text-white' : '' "
-                            >{{ formatHour(n) }}</div>
+                                :class=" !data.hours[n] ? 'bg-red-500 text-white' : '' ">{{ formatHour(n) }}</div>
                         </li>
                     </ul>
                 </td>
@@ -110,7 +106,7 @@ function toggleHour(schedule) {
             }">
             <template v-if="schedule.group">
                 <td colspan="2">
-                    <div class="relative text-center bg-white py-2" v-html="schedule.group"></div>
+                    <div class="relative text-center bg-white py-2 tracking-wider" v-html="schedule.group"></div>
                 </td>
             </template>
             <template v-else>
