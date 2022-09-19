@@ -199,6 +199,15 @@ function toggleHour(e, doctor) {
                 </td>
                 <td @mousemove="onMousemove" @click="toggleHour($event, doctor)"
                     class="group relative w-full overflow-hidden">
+                    <ul class="hidden flex border-b border-gray-200">
+                            <li class="py-2 w-0 flex-grow relative text-center transition-colors" v-for="n in 24"
+                                @click="json(data.hours[n-1])"
+                                :class=" !data.hours[n - 1] ? 'bg-red-500 text-white' : '' ">{{ formatHour(n - 1) }}
+                                <div
+                                    class="absolute left-0 top-0 h-[2160px] border-l border-gray-200 pointer-events-none">
+                                </div>
+                            </li>
+                        </ul>
                     <ul>
                         <li class="top-[50%] -mt-[10px] absolute bg-emerald-400 rounded-lg h-[20px]"
                             v-for="shift of doctor.shifts" :key="shift"
