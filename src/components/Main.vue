@@ -40,7 +40,7 @@ function logout() {
         <button class="float-right" @click="logout()">Выйти</button>
     </header>
     <main>
-        <div ref="fixed">
+        <div ref="fixed" id="fixed">
             <slot name="fixed"></slot>
         </div>
         <div ref="scrollable" class="overflow-y-scroll overflow-x-hidden">
