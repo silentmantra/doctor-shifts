@@ -71,7 +71,8 @@ const data = computed(() => {
 
         if (current.length || showAllDoctors.value) {
             list.push({
-                id: doctor.id,
+                doctorId: doctor.id,
+                date: currentDate.value,
                 title: doctor.title,
                 shifts: current
             });

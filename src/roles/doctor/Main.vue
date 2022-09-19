@@ -14,8 +14,7 @@ import { formatDate } from '../../common/utils';
 const router = useRouter();
 const store = useUserStore();
 
-const doctorId = parseInt(localStorage.userId);
-const doctor = reactive(store.doctors.find(doctor => doctor.id === doctorId));
+const doctor = reactive(store.doctors.find(doctor => doctor.id === parseInt(localStorage.userId)));
 
 defineProps(['currentDate']);
 const { currentDate } = propsToRefs();
@@ -37,7 +36,8 @@ const data = computed(() => {
         const to = from.addDay();
 
         list.push({
-            id: from.getTime(),
+            doctorId: doctor.id,
+            date: from,
             title: formatDate(from),
             shifts: doctor.shifts.filter(shift => overlaps(shift, from, to))
         });

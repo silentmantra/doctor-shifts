@@ -5,8 +5,8 @@ import { overlaps, getScrollbarWidth, watchPost, formatHour, propsToRefs } from 
 import DynamicTeleport from '@/components/DynamicTeleport.vue';
 import { useUserStore } from '@/stores/user';
 
-defineProps(['data', 'currentDate']);
-const { data, currentDate } = propsToRefs();
+defineProps('data'.words);
+const { data } = propsToRefs();
 
 const store = useUserStore();
 
@@ -37,14 +37,14 @@ function onMousemove(e) {
     hoverPos.value = hoverHour.value * width;
 }
 
-function toggleHour(e, doctor) {
+function toggleHour(e, schedule) {
 
-    const from = currentDate.value.clone();
+    const from = schedule.date.clone();
     from.setHours(hoverHour.value);
     const to = from.addHour();
 
-    const allocated = doctor.shifts.some(shift => overlaps(shift, from, to));
-    allocated ? store.removeRange(doctor.id, from, to) : store.addRange(doctor.id, from, to);
+    const allocated = schedule.shifts.some(shift => overlaps(shift, from, to));
+    allocated ? store.removeRange(schedule.doctorId, from, to) : store.addRange(schedule.doctorId, from, to);
 
 }
 
@@ -73,10 +73,10 @@ function toggleHour(e, doctor) {
     </DynamicTeleport>
 
     <table>
-        <tr v-for="doctor of data.list" :key="doctor.id"
+        <tr v-for="schedule of data.list" :key="schedule.id"
             class="cursor-pointer hover:bg-sky-200">
-            <td ref="doctorTitle" class="whitespace-nowrap px-2" v-html="doctor.title"></td>
-            <td @mousemove="onMousemove" @click="toggleHour($event, doctor)"
+            <td ref="doctorTitle" class="whitespace-nowrap px-2" v-html="schedule.title"></td>
+            <td @mousemove="onMousemove" @click="toggleHour($event, schedule)"
                 class="group relative w-full overflow-hidden">
                 <ul class="hidden flex border-b border-gray-200">
                     <li class="py-2 w-0 flex-grow relative text-center transition-colors" v-for="n in 24"
@@ -89,10 +89,10 @@ function toggleHour(e, doctor) {
                 </ul>
                 <ul>
                     <li class="top-[50%] -mt-[10px] absolute bg-emerald-400 rounded-lg h-[20px]"
-                        v-for="shift of doctor.shifts" :key="shift"
+                        v-for="shift of schedule.shifts" :key="shift"
                         :style="{
-                            left: 'calc(' + shift.start.dayPercent(currentDate, 2) + '% + 5px)',
-                            right: 'calc(' + (100 - shift.stop.dayPercent(currentDate)).toFixed(2) + '% + 5px)'
+                            left: 'calc(' + shift.start.dayPercent(schedule.date, 2) + '% + 5px)',
+                            right: 'calc(' + (100 - shift.stop.dayPercent(schedule.date)).toFixed(2) + '% + 5px)'
                         }"></li>
                 </ul>
                 <div style="width: calc(100% / 24)"
