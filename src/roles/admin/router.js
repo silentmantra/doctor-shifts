@@ -21,7 +21,7 @@ export const router = createRouter({
         {
             path: 'doctor-:id(\\d+)',
             name: 'doctor',
-            component: () => import('./Empty.vue')
+            component: () => import('./App.vue')
         },
         {
             path: 'add-doctor',

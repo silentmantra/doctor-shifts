@@ -1,9 +1,9 @@
 <script setup>
 
-import { ref, watch, computed, onMounted } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { RouterView, RouterLink, useRouter } from 'vue-router';
 
-import { overlaps, getScrollbarWidth, watchPost, formatHour, propsToRefs } from '@/common/utils';
+import { overlaps, propsToRefs } from '@/common/utils';
 
 import Main from '@/components/Main.vue';
 import Checkbox from '@/components/Checkbox.vue';
@@ -85,10 +85,6 @@ const data = computed(() => {
 
 function show(shifts) {
     alert(shifts.map(shift => shift.start.format('short') + ' - ' + shift.stop.format('short')).join('\n'));
-}
-
-function json(what) {
-    console.log(what);
 }
 
 </script>
