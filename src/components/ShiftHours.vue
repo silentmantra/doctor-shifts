@@ -67,7 +67,7 @@ function toggleHour(schedule) {
         <table class="w-full">
             <tr>
                 <td ref="hoursTitle">
-                    <Checkbox v-if="someSelected" v-model="someSelected" class="ml-2">
+                    <Checkbox v-if="false && someSelected" v-model="someSelected" class="ml-2">
                         <span v-if="someSelected">Сбросить</span>
                         <span v-else>Восстановить</span>
                     </Checkbox>

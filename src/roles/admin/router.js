@@ -1,7 +1,12 @@
 import { createRouter } from '@/common/utils';
 
 export const router = createRouter({
-    path: '/:date(\\d{2}-\\d{2}-\\d{2})?/:displayMode(all|selected)?/:selection([\\d,]+)?',
+    path: `
+        /:date(\\d{2}-\\d{2}-\\d{2})?
+        /:displayMode(all|selected)?
+        /:selection([\\d,]+)?
+    `.trim().replace(/\s+/g, ''),
+    
     name: 'main',
     component: () => import('./Main.vue'),
     props: route => {

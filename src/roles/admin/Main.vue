@@ -21,7 +21,15 @@ const props = defineProps('currentDate displayMode selection'.words);
 const { currentDate, displayMode, selection } = propsToRefs();
 
 watch(displayMode, displayMode => router.push({ params: { displayMode } }));
-watch(selection, selection => router.push({ params: { selection: selection.join(',') } }));
+watch(selection, selection => {
+
+    const params = { selection: selection.join(',') };
+
+    if (!selection.length && displayMode.value === 'selected') {
+        params.displayMode = null;
+    }
+    router.push({ params });
+});
 
 function changeDate(date) {
     router.push({ name: 'main', params: { date: date.format('shortDate').replaceAll('.', '-') } });
@@ -122,8 +130,13 @@ function show(shifts) {
 
             <div class="mt-2 [&>*]:mr-3">
                 <input class="py-1" v-model="search" placeholder="Фильтр" />
-                <CheckboxSelect v-model="displayMode" :items="{all: 'Показать всех', selected: 'Показать выбранных'}" />
-                <button class="px-3 py-1 ml-5">Редактировать выбранных</button>
+                <CheckboxSelect v-model="displayMode"
+                    :items="selection.length ? {all: 'Показать всех', selected: 'Показать выбранных'} : {all: 'Показать всех'}" />
+                <span v-if="selection.length" class="[&>*]:px-3 [&>*]:py-1 [&>*]:ml-5 [&>*]:bg-gray-400">
+                    Выбранные:
+                    <button>Редактировать</button>
+                    <button @click="selection.clear()">Сбросить</button>
+                </span>
             </div>
 
             <DateSlider :date="currentDate" @date="changeDate" />

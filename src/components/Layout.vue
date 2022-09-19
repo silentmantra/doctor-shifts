@@ -15,6 +15,7 @@ onMounted(() => {
 
     };
 
+    //todo: unmount
     window.addEventListener('resize', resize);
 
     resize();
