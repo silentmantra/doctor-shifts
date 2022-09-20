@@ -79,7 +79,7 @@ export const useUserStore = defineStore('user', () => {
 
     function removeRange(doctor, start, stop) {
 
-        const { before, after, inside, container, shifts } = getShifts(doctor, start, stop);
+        const { container, shifts } = getShifts(doctor, start, stop);
 
         if (container) {
 
