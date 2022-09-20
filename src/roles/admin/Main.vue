@@ -37,7 +37,7 @@ watch(selection, selection => {
             <div class="[&>*]:mr-3">
                 <button @click="addDoctor = true">Добавить врача</button>
                 <button @click="store.generate()">Сгенерировать</button>
-                <button @click="store.clear()">Очистить</button>
+                <button @click="selection.clear(); store.clear()">Очистить</button>
             </div>
         </template>
         <RouterView />

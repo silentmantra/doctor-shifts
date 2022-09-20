@@ -105,10 +105,9 @@ const data = computed(() => {
             <input class="py-1" v-model="search" placeholder="Фильтр" />
             <CheckboxSelect v-model="displayMode"
                 :items="selection.length ? {all: 'Показать всех', selected: 'Показать выбранных ( ' + selection.length + ' )'} : {all: 'Показать всех'}" />
-            <span v-if="selection.length" class="float-right">
-                Выбранные:
-                <RouterLink :to="{name: 'week-hours'}"><button>Редактировать</button></RouterLink>
-                <button @click="selection.clear()">Сбросить</button>
+            <button v-if="selection.length" @click="selection.clear()">Сбросить</button> 
+            <span class="float-right">
+                <RouterLink :to="{name: 'week-hours'}"><button>Переключиться на недели</button></RouterLink>
             </span>
         </div>
 
