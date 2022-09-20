@@ -121,6 +121,10 @@ DateRange.prototype.duration = function (what) {
 
     what = what || 'days';
 
+    if (what === 'hours') {
+        return (this[1].getTime() - this[1].getTime() / 1000 / 3600);
+    }
+
     if (what == 'days') {
         return this[0].durationInDays(this[1]);
     }

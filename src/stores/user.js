@@ -14,7 +14,8 @@ export const useUserStore = defineStore('user', () => {
     return { doctors, getDoctor, addDoctor, generate, clear, users, addRange, removeRange };
 
     function getDoctor(id) {
-        return typeof id === 'number' ? doctors.find(doctor => doctor.id === id) : id;
+        id = typeof id === 'number' ? id : id.id;
+        return doctors.find(doctor => doctor.id === id);
     }
 
     function addDoctor(title) {

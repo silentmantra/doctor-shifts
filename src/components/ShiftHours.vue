@@ -64,9 +64,12 @@ function toggleHour(schedule) {
 
     const from = schedule.date.clone();
     from.setHours(hoverHour.value);
-    const to = from.addHour();
+
+    // add 4 hours if there's no shifts yet for the day
+    const to = from.addHour(schedule.shifts.length ? 1 : 4);
 
     const allocated = schedule.shifts.some(shift => overlaps(shift, from, to));
+
     store[allocated ? 'removeRange' : 'addRange'](schedule.doctorId, from, to);
 
 }
