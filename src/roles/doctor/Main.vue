@@ -11,7 +11,7 @@ import { formatDate, formatWeek } from '../../common/utils';
 
 const store = useUserStore();
 
-const doctor = reactive(store.doctors.find(doctor => doctor.id === parseInt(localStorage.userId)));
+const doctor = reactive(store.getDoctor(parseInt(localStorage.userId)));
 
 const data = computed(() => {
 
