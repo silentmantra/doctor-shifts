@@ -30,7 +30,7 @@ function calcDays() {
         }
     }
 
-    if (days[0].isSame(start)) {
+    if (days[0].isSame(date.value.snapDayBack(1))) {
         return;
     }
 
@@ -58,7 +58,7 @@ function markActiveDate() {
 </script>
 
 <template>
-    <div class="root relative" @wheel="$emit('date', date.addWeek($event.deltaY > 0 ? 1 : -1))">
+    <div class="relative" @wheel="$emit('date', date.addWeek($event.deltaY > 0 ? 1 : -1))">
         <div class="round-button" @click="$emit('date', date.addWeek(-1))">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                 <path fill="none" d="M0 0h24v24H0z" />
@@ -76,7 +76,7 @@ function markActiveDate() {
                 <a
                     @click="$emit('date', day)"
                     v-html="formatWeek(day)"
-                    :class="{ active: day.isSame(date)}"
+                    :class="{ active: day.isSameWeek(date)}"
                     class="
                         block px-3 py-1 rounded-xl cursor-pointer 
                         hover:underline hover:[&.active]:no-underline 
@@ -97,12 +97,6 @@ function markActiveDate() {
 </template>
 
 <style scoped>
-
-    .root {
-        --bg-color: #73AEEA;
-        --button-size: 36px;
-    }
-
     .round-button { @apply
         top-[10px]
     }
