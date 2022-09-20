@@ -9,7 +9,7 @@ export const useUserStore = defineStore('user', () => {
 
     const users = computed(() => [{ id: 1, title: 'Координатор' }, ...doctors]);
 
-    watch(doctors, doctors => localStorage.doctors = JSON.stringify(doctors));
+    watch(doctors, doctors => localStorage.doctors = JSON.stringify(doctors, Date.replacer));
 
     return { doctors, getDoctor, addDoctor, generate, clear, users, addRange, removeRange };
 

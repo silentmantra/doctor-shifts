@@ -20,6 +20,16 @@ Date.prototype.dayPercent = function (day, decimals = 2) {
 
 };
 
+Date.replacer = function (k, v) {
+
+    if (typeof v === 'string' && iso8601DateTimeZ.test(v)) {
+        return new Date(v).addTimezoneOffset().toISOString();
+    }
+
+    return v;
+
+};
+
 Date.reviver = function (k, v) {
 
     if (typeof v === 'string') {
@@ -42,21 +52,9 @@ Date.reviver = function (k, v) {
 
 }
 
-var stdTimeZoneOffset = (function () {
-
-    var jan = new Date(new Date().getFullYear(), 0, 1);
-    var jul = new Date(new Date().getFullYear(), 6, 1);
-    return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
-
-})();
-
-/**
- * @class
- * Creates a date range from an array-like of dates [start, end]
- */
 function DateRange(from, to) {
 
-    var self = this;
+    const self = this;
 
     if (!(from instanceof Date)) {
 
@@ -111,11 +109,6 @@ DateRange.prototype.overlaps = function (range, fields) {
     }
 
     return self.includes(range[0]) || self.includes(range[1]);
-};
-
-//todo: add format param
-DateRange.prototype.toString = function () {
-    return this[0].format('DD.MM.YYYY') + ' - ' + this[1].format('DD.MM.YYYY');
 };
 
 /**
@@ -261,340 +254,48 @@ DateRange.prototype.compare = function (compareWith, fnAddRange, fnDeleteRange) 
 
 };
 
-window.DateRange = DateRange;
-
-// support empty param list
-const _UTC = Date.UTC;
-
-Date.UTC = function () {
-
-    if (arguments.length) {
-        return _UTC.apply(Date, arguments);
-    }
-
-    let date = new Date;
-
-    return _UTC.call(Date, ...date.toArray());
-
-};
-
-let locale = 'en';
-
-Date.setLocale = function (value) {
-    locale = value;
-};
+globalThis.DateRange = DateRange;
 
 Date.prototype.toArray = function () {
     return [this.getFullYear(), this.getMonth(), this.getDate(), this.getHours(), this.getSeconds(), this.getMilliseconds()];
 };
 
-{
-    let parseObjectCbs = [];
-
-    Date.addParseObjectCb = function (val) {
-        parseObjectCbs.push(val);
-    };
-
-    Date.parseObject = function (data, objectCallback, convertFn = Date.parseUTC) {
-
-        if (parseObjectCbs.length) {
-
-            let cs;
-
-            if (objectCallback) {
-                cs = parseObjectCbs.copy();
-                cs.push(objectCallback);
-            } else {
-                cs = parseObjectCbs;
-            }
-
-            objectCallback = data => {
-                for (let i = 0, len = cs.length; i < len; i++) {
-                    cs[i](data);
-                }
-            };
-        }
-
-        process(data);
-        return data;
-
-        function process(data) {
-
-            if (data instanceof Array) {
-                data.each(process);
-            } else if (typeof data === 'object' && data !== null) {
-
-                var keys = Object.keys(data);
-
-                for (var i = 0, len = keys.length; i < len; i++) {
-
-                    var k = keys[i];
-                    var v = data[k];
-
-                    if (!v) {
-
-                        continue;
-
-                    } else if (typeof v === 'string') {
-
-                        if (v === '0000-00-00') {
-
-                            data[k] = null;
-
-                        } else {
-
-                            var noZone;
-
-                            if (iso8601DateTimeZ.test(v) || iso8601Date.test(v) || (noZone = iso8601DateTimeNoZone.test(v))) {
-
-                                if (noZone) {
-                                    v += 'Z';
-                                }
-
-                                data[k] = convertFn(v);
-
-                                // probably it's a bad idea to remove invalid dates (could cause failure in the client code)
-                                /*if (!data[k].valid()) {
-                                    // delete all invalid dates (f.e. with time zones)
-                                    delete data[k];
-                                }*/
-                            }
-                        }
-
-                    } else {
-                        process(v);
-                    }
-
-
-                }
-
-                if (objectCallback) {
-                    objectCallback(data);
-                }
-            }
-
-        }
-
-    };
-
-    Date.parseObjectDirect = function (data, objectCallback) {
-
-        if (parseObjectCbs.length) {
-
-            let cs;
-
-            if (objectCallback) {
-                cs = parseObjectCbs.copy();
-                cs.push(objectCallback);
-            } else {
-                cs = parseObjectCbs;
-            }
-
-            objectCallback = data => {
-                for (let i = 0, len = cs.length; i < len; i++) {
-                    cs[i](data);
-                }
-            };
-        }
-
-        process(data);
-        return data;
-
-        function process(data) {
-
-            if (data instanceof Array) {
-                data.each(process);
-            } else if (typeof data === 'object' && data !== null) {
-
-                var keys = Object.keys(data);
-
-                for (var i = 0, len = keys.length; i < len; i++) {
-
-                    var k = keys[i];
-                    var v = data[k];
-
-                    if (!v) {
-                        continue;
-                    } else if (typeof v === 'string' && iso8601DateTimeZ.test(v)) {
-                        data[k] = new Date(v);
-                    } else {
-                        process(v);
-                    }
-
-                }
-
-                if (objectCallback) {
-                    objectCallback(data);
-                }
-            }
-
-        }
-
-    };
-
-}
-
-function endsWith(str, suffix) {
-    return str.indexOf(suffix, str.length - suffix.length) !== -1;
-}
-
-function removeLastChar(str) {
-    return str.slice(0, -1);
-}
-
-Date.fromTime = function (time) {
-
-    if (time instanceof Date) {
-        return time.clone();
-    }
-
-    var out = new Date();
-    var ts = time.split(':');
-    out.setHours(ts[0], ts[1], ts[2] || 0);
-    out.setMilliseconds(0);
-    return out;
-};
-
 Date.parseUTC = function (from) {
 
-    var len = from.length;
+    const len = from.length;
 
     if (len === 10) {
         from += 'T00:00:00Z';
     }
 
-    var out = new Date(from);
-
-    if (out.valid()) {
-        return new Date(out.getTime() + out.getTimezoneOffset() * 1000 * 60);
-    }
-
-    return $moment(from).toDate();
-
+    const out = new Date(from);
+    return new Date(out.getTime() + out.getTimezoneOffset() * 1000 * 60);
 
 };
 
 Date.prototype.addTimezoneOffset = function () {
-
     return new Date(this.getTime() - this.getTimezoneOffset() * 1000 * 60);
-
 };
 
 Date.prototype.removeTimezoneOffset = function () {
-
     return new Date(this.getTime() + this.getTimezoneOffset() * 1000 * 60);
-
 };
-
-const usFormatReplacementsCache = {};
-
-const usFormatReplacements = [
-    [/(d{1,2})\.(m{1,2})\.(y{1,4})/i, '$2/$1/$3'],
-    [/(d{1,2})\.(m{1,2})/i, '$2/$1'],
-];
 
 Date.prototype.format = function (format) {
 
-    //todo: add support locales
-
-    if (format == 'humanDate') {
-        if (this.isToday()) {
-            return 'Today';
-        }
-
-        if (this.isYesterday()) {
-            return 'Yesterday';
-        }
-
-        if (this.isTomorrow()) {
-            return 'Tomorrow';
-        }
-
-        format = 'shortDate';
+    if (format === 'short') {
+        return pad(this.getDate()) + '.' + pad(this.getMonth() + 1) + '.' +
+            this.getFullYear().toString().substring(2, 4) + ' ' + pad(this.getHours()) + ':' + pad(this.getMinutes());
+    }
+    if (format === 'shortDate') {
+        return pad(this.getDate()) + '.' + pad(this.getMonth() + 1) + '.' +
+            this.getFullYear().toString().substring(2, 4);
+    }
+    if (format === 'shortTime') {
+        return pad(this.getHours()) + ':' + pad(this.getMinutes());
     }
 
-    if (locale === 'en_US') {
-
-        if (format === 'short') {
-            return usDate(this) + ' ' + usTime(this);
-        }
-        if (format === 'shortDate') {
-            return usDate(this);
-        }
-        if (format === 'shortTime') {
-            return usTime(this);
-        }
-
-        let formatted = usFormatReplacementsCache[format];
-        if (!formatted) {
-
-            let replaced;
-
-            for (let i = 0, len = usFormatReplacements.length; i < len; i++) {
-
-                replaced = format.replace.apply(format, usFormatReplacements[i]);
-                if (replaced !== format) {
-                    break;
-                }
-
-            }
-
-            format = usFormatReplacementsCache[format] = replaced || format;
-
-        } else {
-
-            format = formatted;
-        }
-
-
-    } else {
-
-        if (format === 'short') {
-            return pad(this.getDate()) + '.' + pad(this.getMonth() + 1) + '.' +
-                this.getFullYear().toString().substr(2, 2) + ' ' + pad(this.getHours()) + ':' + pad(this.getMinutes());
-        }
-        if (format === 'shortDate') {
-            return pad(this.getDate()) + '.' + pad(this.getMonth() + 1) + '.' +
-                this.getFullYear().toString().substr(2, 2);
-        }
-        if (format === 'shortTime') {
-            return pad(this.getHours()) + ':' + pad(this.getMinutes());
-        }
-
-    }
-
-    return $moment(this).format(format);
-
-    function usDate(date) {
-        let y = date.getFullYear().toString().substr(2, 2);
-        let m = pad(date.getMonth() + 1);
-        let d = pad(date.getDate());
-        return m + '/' + d + '/' + y;
-    }
-
-    function usTime(date) {
-
-        let h = date.getHours(), m = date.getMinutes();
-
-        return pad(h) + ':' + pad(m);
-
-        // no support for 12h format yet;
-
-        /*
-
-        if (h === 0) {
-            return '12:' + pad(m) + 'am';
-        }
-        if (h < 12) {
-            return pad(h) + ':' + pad(m) + 'am';
-        }
-        if (h === 12) {
-            return '12:' + pad(m) + 'pm';
-        }
-        return pad(h - 12) + ':' + pad(m) + 'pm';
-
-         */
-    }
+    throw new Error('Unknown date format');
 
     function pad(input) {
         if (input < 10) {
@@ -605,65 +306,8 @@ Date.prototype.format = function (format) {
 
 };
 
-Date.prototype.valid = function () {
-    return !isNaN(this.getTime());
-};
-
-Date.prototype.ifNull = function () {
-    return this.valid() ? new Date(this) : null;
-};
-
 Date.prototype.isSame = function (date) {
-    return this.getTime() == date.getTime();
-};
-
-
-Date.prototype.isDST = function () {
-    return this.getTimezoneOffset() < stdTimeZoneOffset;
-};
-
-Date.prototype.getDSTOffset = function () {
-    return this.getTimezoneOffset() - stdTimeZoneOffset;
-};
-
-//todo: cache?
-Date.prototype.getDSTAdjustment = function () {
-    return this.addDay().getDSTOffset() - this.getDSTOffset();
-};
-
-Date.prototype.copyTime = function (from) {
-
-    var out = this.clone();
-
-    out.setHours(from.getHours());
-    out.setMinutes(from.getMinutes());
-    out.setSeconds(from.getSeconds());
-    out.setMilliseconds(from.getMilliseconds());
-
-    var adjust = out.getDSTAdjustment();
-    adjust && out.addMinutes(adjust);
-
-    return out;
-
-};
-
-Date.uniqueTimes = function (arr) {
-
-    //todo: optimize, milliseconds?
-
-    var times = {};
-    arr.each(function (time) {
-        times[time ? time.format('HH:mm:ss') : 'null'] = true;
-    });
-
-    var out = [];
-
-    for (var k in times) {
-        out.push(k == 'null' ? null : Date.fromTime(k));
-    }
-
-    return out;
-
+    return this.getTime() === date.getTime();
 };
 
 Date.prototype.isSameDate = function (date) {
@@ -671,18 +315,6 @@ Date.prototype.isSameDate = function (date) {
 };
 
 //todo: optimize isSameXXX
-
-Date.prototype.isSameHour = function (date) {
-    return this.format('HHDDMMYYYY') == date.format('HHDDMMYYYY');
-};
-
-Date.prototype.isSameDay = function (date) {
-    return this.format('DDMMYYYY') == date.format('DDMMYYYY');
-};
-
-Date.prototype.isSameMonth = function (date) {
-    return this.format('MMYYYY') == date.format('MMYYYY');
-};
 
 Date.prototype.isSameYear = function (date) {
     return this.getFullYear() == date.getFullYear();
@@ -696,21 +328,12 @@ Date.prototype.isSameWeekDay = function (date) {
         return this.getDay() == date;
     }
 
-    return this.getDay() == $moment().day(date).day();
+    throw new Error('Invalid argument type');
 
 };
 
 Date.prototype.getYearDay = function () {
     return this.durationInDays(new Date(this.getFullYear(), 0, 1)) + 1;
-};
-
-Date.fromDay = function (day) {
-    return $moment().day(day).toDate();
-};
-
-Date.prototype.isSameTime = function (date, format) {
-    format = format || 'HH:mm:ss';
-    return $moment(this).format(format) == moment(date).format(format);
 };
 
 Date.prototype.clone = function () {
@@ -742,12 +365,6 @@ Date.prototype.date = function () {
 };
 
 Date.prototype.toDate = Date.prototype.date;
-
-Date.prototype.isLeapYear = function () {
-    var dt = new Date(this.getFullYear(), 0, 1);
-    var diff = dt.daysTo(dt.addYear());
-    return diff == 366;
-};
 
 Date.prototype.snapDayNearest = function (day) {
 
@@ -801,21 +418,6 @@ Date.prototype.snapDayBack = function (day) {
         return this.toDate().addDay(-(cur - day));
     }
 
-};
-
-Date.today = function () {
-    //var now=Date.now();
-    //var dt=new Date(now.getFullYear(),now.getMonth(),now.getDate());
-    var dt = new Date(new Date(Date.now()).toDateString());
-    return dt.getTime();
-};
-
-Date.yesterday = function () {
-    return Date.Yesterday().getTime();
-};
-
-Date.tomorrow = function () {
-    return Date.Tomorrow().getTime();
 };
 
 Date.Tomorrow = function () {
@@ -1002,21 +604,3 @@ Date.prototype.getWeek = function (dowOffset) {
     }
     return weeknum;
 };
-
-
-/**
- * Max date value for events.
- * Purpose is to provide a placeholder for events without an end date
- * while still allowing queries and filtering to happen normally.
- */
-const MAX_EVENT_DATE = new Date(2100, 0, 1);
-
-Date.maxEventDate = function () {
-    return new Date(MAX_EVENT_DATE);
-};
-
-Date.prototype.isMaxEventDate = function () {
-    return this.isSameDate(MAX_EVENT_DATE);
-};
-
-
