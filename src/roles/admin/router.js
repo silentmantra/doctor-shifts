@@ -6,7 +6,7 @@ export const router = createRouter({
         /:displayMode(all|selected)?
         /:selection([\\d,]+)?
     `.trim().replace(/\s+/g, ''),
-    
+
     name: 'main',
     component: () => import('./Main.vue'),
     props: route => {
@@ -24,14 +24,20 @@ export const router = createRouter({
             selection = route.params.selection.split(',').map(id => parseInt(id));
         }
 
-        return { currentDate, displayMode: route.params.displayMode, selection };
+        return {
+            currentDate,
+            displayMode: route.params.displayMode,
+            selection
+        };
 
     },
-    children: [
-        {
-            path: 'add-doctor',
-            name: 'add-doctor',
-            component: () => import('./AddDoctor.vue')
-        }
-    ]
+    children: [{
+        path: '',
+        name: 'day-hours',
+        component: () => import('./DayHours.vue')
+    }, {
+        path: 'week-hours',
+        name: 'week-hours',
+        component: () => import('./WeekHours.vue')
+    }]
 });

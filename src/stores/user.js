@@ -11,10 +11,17 @@ export const useUserStore = defineStore('user', () => {
 
     watch(doctors, doctors => localStorage.doctors = JSON.stringify(doctors));
 
-    return { doctors, getDoctor, generate, clear, users, addRange, removeRange };
+    return { doctors, getDoctor, addDoctor, generate, clear, users, addRange, removeRange };
 
     function getDoctor(id) {
         return typeof id === 'number' ? doctors.find(doctor => doctor.id === id) : id;
+    }
+
+    function addDoctor(title) {
+        const id = doctors.map('id').max() + 1;
+        const doctor = { id, title, shifts: [] };
+        doctors.unshift(doctor);
+        return doctor;
     }
 
     function getShifts(doctor, start, stop) {

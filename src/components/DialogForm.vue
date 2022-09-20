@@ -3,6 +3,7 @@
 import { ref, onMounted } from 'vue';
 
 const props = defineProps('title onSubmit submitLabel closable'.words);
+const emit = defineEmits('submit'.words);
 
 const dialog = ref();
 const form = ref();
@@ -14,10 +15,14 @@ onMounted(() => {
 
 const isValid = ref(false);
 
+function submit() {
+    emit('submit');
+    dialog.value.close();
+}
+
 function close(e) {
     if (props.closable && e.target === dialog.value) {
         dialog.value.close();
-        history.back();
     }
 }
 
@@ -25,7 +30,7 @@ function close(e) {
 <template>
     <dialog ref="dialog" @click="close" @close="$emit('close')">
         <form ref="form" @keyup="isValid = form.checkValidity()" @change="isValid = form.checkValidity()"
-            @submit.prevent="$emit('submit'); dialog.close()">
+            @submit.prevent="submit">
             <h1>{{ props.title }}</h1>
             <div>
                 <div class="mb-3">

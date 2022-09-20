@@ -25,14 +25,19 @@ watch(() => data.value.list.filter('selected').map('doctorId'), value => {
 const doctorTitle = ref();
 const hoursTitle = ref();
 
+let maxTitleWidth;
+
 const resizeTitle = () => {
 
-    const cell = doctorTitle.value?.[0];
+    // avoid jumping, always expand
 
-    if (cell) {
-        hoursTitle.value.style.width = cell.offsetWidth + 'px';
+    const width = doctorTitle.value?.[0]?.offsetWidth || 150;
+
+    if (maxTitleWidth === undefined) {
+        maxTitleWidth = width;
     }
 
+    hoursTitle.value.style.width = width + 'px'
 };
 
 onMounted(resizeTitle);

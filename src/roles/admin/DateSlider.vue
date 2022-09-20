@@ -30,7 +30,7 @@ function calcDays() {
 const list = ref();
 const activeDateRect = ref({ width: 0, left: 0 });
 watchPost(date, markActiveDate);
-onMounted(markActiveDate);
+onMounted(()=>setTimeout(markActiveDate));
 
 function markActiveDate() {
     const rect = list.value.querySelector('.active')?.getBoundingClientRect();

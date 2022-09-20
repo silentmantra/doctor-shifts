@@ -7,7 +7,6 @@ import { overlaps, propsToRefs } from '@/common/utils';
 
 import Layout from '@/components/Layout.vue';
 import ShiftHours from '@/components/ShiftHours.vue';
-import WeekSlider from './WeekSlider.vue';
 import { useUserStore } from '@/stores/user';
 import { formatDate, formatWeek } from '../../common/utils';
 
@@ -66,10 +65,6 @@ const data = computed(() => {
         <template #header>
             <h1 class="text-2xl mt-1">{{ doctor.title }}</h1>
         </template>
-
-        <!--<template #fixed>
-            <WeekSlider :date="currentDate" @date="changeDate" />
-        </template>-->
 
         <ShiftHours v-bind="{ data }" />
 

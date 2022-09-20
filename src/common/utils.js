@@ -1,5 +1,22 @@
-import { watch, toRef, reactive, getCurrentInstance } from 'vue';
+import { watch, toRef, reactive, getCurrentInstance, provide as provideVue, inject as injectVue } from 'vue';
 import { createRouter as createVueRouter, createWebHistory } from 'vue-router';
+
+export function provide(list) {
+    for (const name in list) {
+        provideVue(name, list[name]);
+    }
+}
+
+export function inject(names) {
+
+    const out = {};
+
+    for (const name of names.words) {
+        out[name] = injectVue(name);
+    }
+
+    return out;
+}
 
 export function overlaps(shift, from, to) {
 
@@ -32,6 +49,10 @@ export function createRouter(...routes) {
 
     const _push = router.push;
 
+    router.pushParams = function (params) {
+        return router.push({ params });
+    };
+
     router.push = function (...args) {
 
         //todo: preserve only the parent's params
@@ -62,7 +83,7 @@ export function propsToRefs() {
 
     for (const name in props) {
         if (
-            Array.isArray(props[name]) 
+            Array.isArray(props[name])
             //props[name]?.__proto__.constructor.name === 'Object'
         ) {
             out[name] = reactive(props[name]);
