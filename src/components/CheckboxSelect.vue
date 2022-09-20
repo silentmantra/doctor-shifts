@@ -28,21 +28,6 @@ const items = computed(() => {
 
 });
 
-// const items = reactive([]);
-// for (const id in props.items) {
-//     items.push(reactive({
-//         id,
-//         title: props.items[id],
-//         selected: computed({
-//             get: () => value.value === id,
-//             set: val => {
-//                 value.value = val ? id : null
-//             }
-//         })
-//     }));
-// }
-
-
 </script>
 
 <template>
