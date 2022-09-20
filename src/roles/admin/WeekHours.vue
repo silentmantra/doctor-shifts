@@ -9,13 +9,13 @@ import Layout from '@/components/Layout.vue';
 import ShiftHours from '@/components/ShiftHours.vue';
 import WeekSlider from './WeekSlider.vue';
 import { useUserStore } from '@/stores/user';
-import { formatDate, formatWeek } from '../../common/utils';
+import { formatDate } from '../../common/utils';
 import DynamicTeleport from '../../components/DynamicTeleport.vue';
 
 const router = useRouter();
 const store = useUserStore();
 
-const { currentDate, selection } = inject('currentDate displayMode selection search');
+const { currentDate, selection } = inject('currentDate selection');
 
 const doctors = computed(() => store.doctors.filter(doctor => selection.includes(doctor.id)));
 
@@ -62,7 +62,7 @@ const data = computed(() => {
     <DynamicTeleport to="#fixed">
 
         <div class="mt-2 [&>*]:mr-3 h-[34px] text-right">
-            <RouterLink :to="{name: 'day-hours'}"><button>Вернуться к списку</button></RouterLink>
+            <RouterLink :to="{name: 'day-hours'}"><button>Вернуться к дневному списку</button></RouterLink>
         </div>
 
         <WeekSlider :date="currentDate" @date="changeDate" />

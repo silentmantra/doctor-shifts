@@ -1,8 +1,8 @@
 <script setup>
 
-import { computed, reactive } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { inject, overlaps } from '@/common/utils';
-import { RouterView, RouterLink, useRouter } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 
 import ShiftHours from '@/components/ShiftHours.vue';
 import CheckboxSelect from '@/components/CheckboxSelect.vue';
@@ -14,7 +14,8 @@ import { useUserStore } from '@/stores/user';
 const router = useRouter();
 const store = useUserStore();
 
-const { currentDate, displayMode, selection, search } = inject('currentDate displayMode selection search');
+const { currentDate, displayMode, selection } = inject('currentDate displayMode selection');
+const search = ref('');
 
 function changeDate(date) {
     router.pushParams({ date: date.format('shortDate').replaceAll('.', '-') });
@@ -104,7 +105,7 @@ const data = computed(() => {
             <input class="py-1" v-model="search" placeholder="Фильтр" />
             <CheckboxSelect v-model="displayMode"
                 :items="selection.length ? {all: 'Показать всех', selected: 'Показать выбранных'} : {all: 'Показать всех'}" />
-            <span v-if="selection.length">
+            <span v-if="selection.length" class="float-right">
                 Выбранные:
                 <RouterLink :to="{name: 'week-hours'}"><button>Редактировать</button></RouterLink>
                 <button @click="selection.clear()">Сбросить</button>

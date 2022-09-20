@@ -12,12 +12,9 @@ import AddDoctor from './AddDoctor.vue';
 const router = useRouter();
 const store = useUserStore();
 
-const search = ref(localStorage.search || '');
-watch(search, val => localStorage.search = val);
-
 const props = defineProps('currentDate displayMode selection'.words);
 const { currentDate, displayMode, selection } = propsToRefs();
-provide({ currentDate, displayMode, selection, search });
+provide({ currentDate, displayMode, selection });
 
 const addDoctor = ref(false);
 
