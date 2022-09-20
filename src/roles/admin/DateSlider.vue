@@ -81,29 +81,3 @@ function markActiveDate() {
         </div>
     </div>
 </template>
-
-<style scoped>
-
-    .root {
-        --bg-color: #73AEEA;
-        --button-size: 36px;
-    }
-
-    .round-button { @apply
-        top-[10px]
-        absolute 
-        rounded-full 
-        border border-[color:var(--bg-color)]
-        h-[var(--button-size)] w-[var(--button-size)]
-        cursor-pointer
-        hover:shadow-md
-        ;
-        svg { @apply
-            absolute
-            top-[50%]
-            left-[50%]
-            mt-[-12px]
-            ml-[-12px]
-        }
-    }
-</style>
