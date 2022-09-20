@@ -31,13 +31,19 @@ const resizeTitle = () => {
 
     // avoid jumping, always expand
 
-    const width = doctorTitle.value?.[0]?.offsetWidth || 150;
+    const cell = doctorTitle.value?.[0];
 
-    if (maxTitleWidth === undefined) {
+    const width = cell?.offsetWidth || 150;
+
+    if (maxTitleWidth === undefined || width > maxTitleWidth) {
         maxTitleWidth = width;
     }
 
-    hoursTitle.value.style.width = width + 'px'
+    hoursTitle.value.style.width = maxTitleWidth + 'px';
+    if (cell) {
+        cell.style.minWidth = maxTitleWidth + 'px';
+    }
+
 };
 
 onMounted(resizeTitle);
