@@ -1,26 +1,17 @@
 <script setup>
 
 import { reactive, computed } from 'vue';
-import { useRouter } from 'vue-router';
 
-import { overlaps, propsToRefs } from '@/common/utils';
+import { overlaps } from '@/common/utils';
 
 import Layout from '@/components/Layout.vue';
 import ShiftHours from '@/components/ShiftHours.vue';
 import { useUserStore } from '@/stores/user';
 import { formatDate, formatWeek } from '../../common/utils';
 
-const router = useRouter();
 const store = useUserStore();
 
 const doctor = reactive(store.doctors.find(doctor => doctor.id === parseInt(localStorage.userId)));
-
-defineProps('currentDate'.words);
-const { currentDate } = propsToRefs();
-
-function changeDate(date) {
-    router.push({ name: 'main', params: { date: date.format('shortDate').replaceAll('.', '-') } });
-}
 
 const data = computed(() => {
 
