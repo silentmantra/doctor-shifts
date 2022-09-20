@@ -18,6 +18,11 @@
   font-weight: normal;
 }
 
+:root, dialog {
+    --bg-color: #73AEEA;
+    --button-size: 36px;
+}
+
 dialog {
 
   h1 { @apply
@@ -47,4 +52,23 @@ input, select { @apply
     p-2 
     bg-white 
     border border-gray-300 rounded-md 
+}
+
+.round-button { @apply
+    bg-white
+    absolute 
+    rounded-full 
+    border border-[color:var(--bg-color)]
+    h-[var(--button-size)] w-[var(--button-size)]
+    cursor-pointer
+    hover:shadow-md
+    ;
+    svg { @apply
+        pointer-events-none
+        absolute
+        top-[50%]
+        left-[50%]
+        mt-[-12px]
+        ml-[-12px]
+    }
 }

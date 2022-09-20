@@ -6,6 +6,7 @@ const props = defineProps('title onSubmit submitLabel closable'.words);
 const emit = defineEmits('submit'.words);
 
 const dialog = ref();
+const closeButton = ref();
 const form = ref();
 
 onMounted(() => {
@@ -21,14 +22,22 @@ function submit() {
 }
 
 function close(e) {
-    if (props.closable && e.target === dialog.value) {
+    if (props.closable && [dialog, closeButton].map('value').includes(e.target)) {
         dialog.value.close();
     }
 }
 
 </script>
 <template>
-    <dialog ref="dialog" @click="close" @close="$emit('close')">
+    <dialog class="relative overflow-visible" ref="dialog" @click="close" @close="$emit('close')">
+        <div v-if="closable" ref="closeButton" @click="close" class="absolute round-button right-[-40px] top-[-40px]">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                <path fill="none" d="M0 0h24v24H0z" />
+                <path
+                    d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"
+                    fill="rgba(115,174,234,1)" />
+            </svg>
+        </div>
         <form ref="form" @keyup="isValid = form.checkValidity()" @change="isValid = form.checkValidity()"
             @submit.prevent="submit">
             <h1>{{ props.title }}</h1>
