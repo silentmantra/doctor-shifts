@@ -15,23 +15,26 @@ calcDays();
 
 function calcDays() {
 
+    if (days[0].isSame(date.value.snapDayBack(1))) {
+        return;
+    }
+
     const monday = Date.Today().snapDayBack(1);
 
     let start = monday.clone();
     let current;
 
+    // find appropriate week range
     if (date.value > monday) {
-        while (date.value > (current = start.addWeek(4))) {
+        // look forward
+        while (date.value >= (current = start.addWeek(4))) {
             start = current;
         }
-    } else {
-        while (date.value < (current = start.addWeek(-4))) {
-            start = current;
-        }
-    }
+    } else if (date.value < monday) {
+        // look backward
+        while (date.value < (start = start.addWeek(-4))) {
 
-    if (days[0].isSame(date.value.snapDayBack(1))) {
-        return;
+        }
     }
 
     for (let i = 0; i < WEEK_COUNT; i++) {
@@ -44,7 +47,7 @@ function calcDays() {
 const list = ref();
 const activeDateRect = ref({ width: 0, left: 0 });
 watchPost(date, markActiveDate);
-onMounted(markActiveDate);
+onMounted(() => setTimeout(markActiveDate));
 
 function markActiveDate() {
     const rect = list.value.querySelector('.active')?.getBoundingClientRect();
@@ -74,7 +77,7 @@ function markActiveDate() {
                 :key="day"
                 class="flex-grow text-center">
                 <a
-                    @click="$emit('date', day)"
+                    @click="$emit('date', day.copyDay(date))"
                     v-html="formatWeek(day)"
                     :class="{ active: day.isSameWeek(date)}"
                     class="

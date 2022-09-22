@@ -370,6 +370,14 @@ Date.prototype.date = function () {
 
 Date.prototype.toDate = Date.prototype.date;
 
+Date.prototype.copyDay = function (date) {
+
+    let day = date.getDay();
+    day === 0 && (day = 7);
+    return this.snapDayBack(1).addDay(day - 1);
+
+};
+
 Date.prototype.snapDayNearest = function (day) {
 
     var prev = this.snapDayBack(day);
