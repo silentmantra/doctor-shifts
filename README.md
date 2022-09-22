@@ -1,17 +1,9 @@
 # Календарь врачей (смены)
 
+ТЗ: https://docs.google.com/document/d/1l0rQjUijqrw9k3VL5efV-XhGXEQkf56A3HGO7oyq7eo
+
 Объяснительное видео (баг отображение недели исправлен): 
 https://www.youtube.com/watch?v=48jArk6y-1g
-
-This template should help get you started developing with Vue 3 in Vite.
-
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
 
 ## Project Setup
 
