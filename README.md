@@ -1,4 +1,7 @@
-# schedule
+# Календарь врачей (смены)
+
+Объяснительное видео (баг отображение недели исправлен): 
+https://www.youtube.com/watch?v=48jArk6y-1g
 
 This template should help get you started developing with Vue 3 in Vite.
 
