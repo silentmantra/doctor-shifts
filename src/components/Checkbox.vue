@@ -1,7 +1,11 @@
 <script setup>
 
 import { useModel } from '@/common/useModel';
-defineProps('modelValue'.words);
+
+defineProps({
+    modelValue: Boolean
+});
+
 const value = useModel();
 
 </script>

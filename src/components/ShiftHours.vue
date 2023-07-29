@@ -1,9 +1,6 @@
 <script setup>
 
-import { ref, watch, computed, onMounted } from 'vue';
 import { overlaps, getScrollbarWidth, watchPost, formatHour, propsToRefs } from '@/common/utils';
-import DynamicTeleport from './DynamicTeleport.vue';
-import Checkbox from './Checkbox.vue';
 import { useUserStore } from '@/stores/user';
 
 defineProps('data selectable'.words);
@@ -76,15 +73,15 @@ function toggleHour(schedule) {
 
 </script>
 <template>
-    <DynamicTeleport to="#fixed">
+    <dynamic-teleport to="#fixed">
 
         <table class="w-full">
             <tr>
                 <td ref="hoursTitle">
-                    <Checkbox v-if="false && someSelected" v-model="someSelected" class="ml-2">
+                    <checkbox v-if="false && someSelected" v-model="someSelected" class="ml-2">
                         <span v-if="someSelected">Сбросить</span>
                         <span v-else>Восстановить</span>
-                    </Checkbox>
+                    </checkbox>
                 </td>
                 <td class="relative">
                     <ul class="flex border-b border-gray-200">
@@ -109,7 +106,7 @@ function toggleHour(schedule) {
             </tr>
         </table>
 
-    </DynamicTeleport>
+    </dynamic-teleport>
 
     <table class="relative z-10">
         <tr v-for="schedule of data.list" :key="schedule.id"
@@ -125,9 +122,9 @@ function toggleHour(schedule) {
             </template>
             <template v-else>
                 <td ref="doctorTitle" class="whitespace-nowrap px-2">
-                    <Checkbox class="!block" v-if="selectable" v-model="schedule.selected"><span
+                    <checkbox class="!block" v-if="selectable" v-model="schedule.selected"><span
                             v-html="schedule.title"></span>
-                    </Checkbox>
+                    </checkbox>
                     <span v-else v-html="schedule.title"></span>
                 </td>
                 <td @mousemove="onMousemove" @click="toggleHour(schedule)"

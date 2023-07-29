@@ -1,15 +1,9 @@
 <script setup>
 
-import { ref, computed, watch } from 'vue';
-import { useRouter } from 'vue-router';
-
 import { inject, overlaps } from '@/common/utils';
 
-import ShiftHours from '@/components/ShiftHours.vue';
-import WeekSlider from './WeekSlider.vue';
 import { useUserStore } from '@/stores/user';
 import { formatDate } from '../../common/utils';
-import DynamicTeleport from '../../components/DynamicTeleport.vue';
 
 const router = useRouter();
 const store = useUserStore();
@@ -65,7 +59,7 @@ const data = computed(() => {
         
 <template>
 
-    <DynamicTeleport to="#fixed">
+    <dynamic-teleport to="#fixed">
 
         <div class="mt-2 [&>*]:mr-3 h-[34px]">
 
@@ -80,16 +74,16 @@ const data = computed(() => {
             </template>
 
             <div class="float-right">
-                <RouterLink :to="{name: 'day-hours'}"><button>Переключиться на дни</button></RouterLink>
+                <router-link :to="{name: 'day-hours'}"><button>Переключиться на дни</button></router-link>
             </div>
 
             <div class="clear-both"></div>
         </div>
-        <WeekSlider :date="currentDate" @date="changeDate" />
+        <week-slider :date="currentDate" @date="changeDate"></week-slider>
 
-    </DynamicTeleport>
+    </dynamic-teleport>
 
-    <ShiftHours v-bind="{ data }" />
+    <shift-hours v-bind="{ data }"></shift-hours>
 
 </template>
 

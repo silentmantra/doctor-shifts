@@ -1,10 +1,12 @@
 <script setup>
 
 import { useModel } from '@/common/useModel';
-import { computed, reactive } from 'vue';
-import Checkbox from './Checkbox.vue';
 
-const props = defineProps('modelValue items'.words);
+const props = defineProps({
+    modelValue:Array, 
+    items:Array
+});
+
 const value = useModel();
 
 const items = computed(() => {
@@ -31,5 +33,5 @@ const items = computed(() => {
 </script>
 
 <template>
-    <Checkbox v-for="item in items" v-model="item.selected" :key="item.id"><span v-html="item.title"></span></Checkbox>
+    <checkbox v-for="item in items" v-model="item.selected" :key="item.id"><span v-html="item.title"></span></checkbox>
 </template>

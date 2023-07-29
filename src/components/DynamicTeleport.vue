@@ -1,6 +1,5 @@
 <script setup>
 
-import { ref, onMounted, onUpdated } from 'vue';
 import { propsToRefs } from '@/common/utils';
 
 defineProps('to disabled'.words);
@@ -24,7 +23,7 @@ onUpdated(()=> {
 </script>
 
 <template>
-    <Teleport :to="target" :disabled="!target || disabled">
+    <teleport :to="target" :disabled="!target || disabled">
         <slot></slot>
-    </Teleport>
+    </teleport>
 </template>

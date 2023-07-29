@@ -1,11 +1,7 @@
 <script setup>
 
-import { reactive, computed } from 'vue';
-
 import { overlaps } from '@/common/utils';
 
-import Layout from '@/components/Layout.vue';
-import ShiftHours from '@/components/ShiftHours.vue';
 import { useUserStore } from '@/stores/user';
 import { formatDate, formatWeek } from '../../common/utils';
 
@@ -51,13 +47,13 @@ const data = computed(() => {
 </script>
     
 <template>
-    <Layout>
+    <layout>
 
         <template #header>
             <h1 class="text-2xl mt-1">{{ doctor.title }}</h1>
         </template>
 
-        <ShiftHours v-bind="{ data }" />
+        <shift-hours v-bind="{ data }"></shift-hours>
 
-    </Layout>
+    </layout>
 </template>

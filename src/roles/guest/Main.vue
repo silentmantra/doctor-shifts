@@ -1,8 +1,5 @@
 <script setup>
 
-import { ref } from 'vue';
-
-import DialogForm from '@/components/DialogForm.vue';
 import { useUserStore } from '@/stores/user';
 
 const { users } = useUserStore();
@@ -16,11 +13,11 @@ function login(id) {
 
 </script>
 <template>
-    <DialogForm @submit="login(id)" title="Авторизация"
+    <dialog-form @submit="login(id)" title="Авторизация"
         submit-label="Авторизоваться">
-            <label class="block mb-2">Войти как</label>
-            <select required class="mb-1" v-model="id" placeholder="Войти как:">
-                <option v-for="user of users" :key="user.id" :value="user.id">{{ user.title }}</option>
-            </select>
-    </DialogForm>
+        <label class="block mb-2">Войти как</label>
+        <select required class="mb-1 w-full" v-model="id" placeholder="Войти как:">
+            <option v-for="user of users" :key="user.id" :value="user.id">{{ user.title }}</option>
+        </select>
+    </dialog-form>
 </template>

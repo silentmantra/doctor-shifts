@@ -5,7 +5,7 @@ import './common/date';
 
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import App from '@/components/App.vue';
+import {RouterView as App} from 'vue-router';
 import { createRouter } from '@/common/utils';
 
 

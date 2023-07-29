@@ -1,10 +1,7 @@
 <script setup>
 
-import { ref, onMounted } from 'vue';
-
 const scrollable = ref();
 const fixed = ref();
-
 
 onMounted(() => {
 
@@ -21,8 +18,6 @@ onMounted(() => {
     resize();
 
 });
-
-
 
 function logout() {
     delete localStorage.userId;

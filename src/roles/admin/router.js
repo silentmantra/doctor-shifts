@@ -34,10 +34,10 @@ export const router = createRouter({
     children: [{
         path: '',
         name: 'day-hours',
-        component: () => import('./DayHours.vue')
+        component: () => import('DayHours.vue')
     }, {
         path: 'week-hours',
         name: 'week-hours',
-        component: () => import('./WeekHours.vue')
+        component: () => import('WeekHours.vue')
     }]
 });

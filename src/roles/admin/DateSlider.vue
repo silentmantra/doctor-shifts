@@ -1,6 +1,5 @@
 <script setup>
 
-import { reactive, onMounted, ref, watch } from 'vue';
 import { formatDate, propsToRefs, watchPost } from '@/common/utils';
 
 defineProps('date'.words);

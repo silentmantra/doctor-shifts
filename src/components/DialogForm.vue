@@ -1,7 +1,5 @@
 <script setup>
 
-import { ref, onMounted } from 'vue';
-
 const props = defineProps('title onSubmit submitLabel closable'.words);
 const emit = defineEmits('submit'.words);
 
@@ -71,10 +69,8 @@ function close(e) {
         select-none
     }
 
-    :deep {
-        input:not([type=checkbox]), select, button { @apply 
-            w-full
-        }
+    :deep(input:not([type=checkbox]), select, button) { @apply 
+        w-full
     }
-
+    
 </style>
