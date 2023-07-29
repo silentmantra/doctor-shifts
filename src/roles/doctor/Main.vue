@@ -1,9 +1,7 @@
 <script setup>
 
-import { overlaps } from '@/common/utils';
-
+import { overlaps, formatDate, formatWeek } from '@/common/utils';
 import { useUserStore } from '@/stores/user';
-import { formatDate, formatWeek } from '../../common/utils';
 
 const store = useUserStore();
 

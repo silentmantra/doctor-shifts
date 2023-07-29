@@ -3,7 +3,11 @@
 import { overlaps, getScrollbarWidth, watchPost, formatHour, propsToRefs } from '@/common/utils';
 import { useUserStore } from '@/stores/user';
 
-defineProps('data selectable'.words);
+defineProps({
+    data: Object,
+    selectable: Boolean
+});
+
 const { data, selectable } = propsToRefs();
 
 const store = useUserStore();
@@ -91,18 +95,18 @@ function toggleHour(schedule) {
                                 :class="{
                                     'border-gray-200': n % 6 !== 0,
                                     'border-gray-300': n % 6 === 0,
-                                    'bg-indigo-50': n >= 0 && n < 6, 
+                                    'bg-indigo-50': n >= 0 && n < 6,
                                     'bg-green-50': n >= 6 && n < 12,
                                     'bg-yellow-50': n >= 12 && n < 18,
-                                    'bg-orange-50' : n >= 18 && n < 24
+                                    'bg-orange-50': n >= 18 && n < 24
                                 }">
                             </div>
                             <div class="relative py-2 transition-colors border-b"
-                                :class=" !data.hours[n] ? 'bg-red-500 text-white' : '' ">{{ formatHour(n) }}</div>
+                                :class="!data.hours[n] ? 'bg-red-500 text-white' : ''">{{ formatHour(n) }}</div>
                         </li>
                     </ul>
                 </td>
-                <td :style="{width: getScrollbarWidth() + 'px'}"></td>
+                <td :style="{ width: getScrollbarWidth() + 'px' }"></td>
             </tr>
         </table>
 
@@ -138,7 +142,7 @@ function toggleHour(schedule) {
                             }"></li>
                     </ul>
                     <div style="width: calc(100% / 24)"
-                        :style="{left: hoverPos + 'px'}"
+                        :style="{ left: hoverPos + 'px' }"
                         class="top-0 text-center absolute group-hover:block hidden h-[100%] border border-gray-300 bg-[rgba(255,255,0,.3)]">
                         <span class="hidden text-3xl relative top-[-7px] text-[rgba(0,0,0,.5)]">{{ formatHour(hoverHour)
                         }}</span>
@@ -151,5 +155,4 @@ function toggleHour(schedule) {
             <td></td>
         </tr>
     </table>
-
 </template>

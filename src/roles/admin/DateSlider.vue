@@ -2,7 +2,10 @@
 
 import { formatDate, propsToRefs, watchPost } from '@/common/utils';
 
-defineProps('date'.words);
+defineProps({
+    date: Date
+});
+
 const { date } = propsToRefs();
 
 const DAY_COUNT = 7;
@@ -53,7 +56,7 @@ function markActiveDate() {
         </div>
         <ul ref="list" class="w-full flex py-3 px-[50px]">
             <li class="absolute z-[-1] top=0 h-[32px] bg-[color:var(--bg-color)] rounded-xl transition-all"
-                :style="{left: activeDateRect.left + 'px', width: activeDateRect.width + 'px'}"></li>
+                :style="{ left: activeDateRect.left + 'px', width: activeDateRect.width + 'px' }"></li>
             <li
                 v-for="day of days"
                 :key="day"
@@ -61,7 +64,7 @@ function markActiveDate() {
                 <a
                     @click="$emit('date', day)"
                     v-html="formatDate(day)"
-                    :class="{ active: day.isSame(date)}"
+                    :class="{ active: day.isSame(date) }"
                     class="
                         block px-3 py-1 rounded-xl cursor-pointer 
                         hover:underline hover:[&.active]:no-underline 

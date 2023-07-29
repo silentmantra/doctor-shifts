@@ -1,13 +1,17 @@
 <script setup>
 
 import { propsToRefs, provide } from '@/common/utils';
-
 import { useUserStore } from '@/stores/user';
 
 const router = useRouter();
 const store = useUserStore();
 
-const props = defineProps('currentDate displayMode selection'.words);
+const props = defineProps({
+    currentDate: Date,
+    displayMode: String,
+    selection: Array
+});
+
 const { currentDate, displayMode, selection } = propsToRefs();
 provide({ currentDate, displayMode, selection });
 

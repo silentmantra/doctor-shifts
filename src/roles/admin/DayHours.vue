@@ -1,7 +1,6 @@
 <script setup>
 
 import { inject, overlaps } from '@/common/utils';
-
 import { useUserStore } from '@/stores/user';
 
 const router = useRouter();

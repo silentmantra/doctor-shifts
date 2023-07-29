@@ -3,8 +3,8 @@
 import { useModel } from '@/common/useModel';
 
 const props = defineProps({
-    modelValue:Array, 
-    items:Array
+    modelValue: String,
+    items: Object
 });
 
 const value = useModel();

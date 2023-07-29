@@ -1,7 +1,13 @@
 <script setup>
 
-const props = defineProps('title onSubmit submitLabel closable'.words);
-const emit = defineEmits('submit'.words);
+const props = defineProps({
+    title: String,
+    onSubmit: Function,
+    submitLabel: String,
+    closable: Boolean
+});
+
+const emit = defineEmits(['submit']);
 
 const dialog = ref();
 const closeButton = ref();

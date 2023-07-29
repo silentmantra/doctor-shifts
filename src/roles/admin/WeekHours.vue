@@ -1,9 +1,7 @@
 <script setup>
 
-import { inject, overlaps } from '@/common/utils';
-
+import { inject, overlaps, formatDate } from '@/common/utils';
 import { useUserStore } from '@/stores/user';
-import { formatDate } from '../../common/utils';
 
 const router = useRouter();
 const store = useUserStore();
@@ -12,6 +10,7 @@ const { currentDate, selection } = inject('currentDate selection');
 
 const allDoctors = computed(() => store.doctors.filter(doctor => !selection.includes(doctor.id)));
 const doctorToAdd = ref(0);
+
 watch(doctorToAdd, () => {
     doctorToAdd.value && selection.unshift(doctorToAdd.value);
     doctorToAdd.value = 0;

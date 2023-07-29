@@ -2,7 +2,10 @@
 
 import { propsToRefs } from '@/common/utils';
 
-defineProps('to disabled'.words);
+defineProps({
+    to: String,
+    disabled: Boolean
+});
 
 const { to, disabled } = propsToRefs();
 
@@ -12,7 +15,7 @@ onMounted(() => target.value = document.querySelector(to.value));
 
 let resized = false;
 
-onUpdated(()=> {
+onUpdated(() => {
     if (resized) {
         return;
     }

@@ -2,7 +2,10 @@
 
 import { formatWeek, propsToRefs, watchPost } from '@/common/utils';
 
-defineProps('date'.words);
+defineProps({
+    date:Date
+});
+
 const { date } = propsToRefs();
 
 const WEEK_COUNT = 4;
