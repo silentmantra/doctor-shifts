@@ -1,6 +1,5 @@
 <script setup>
 
-import { propsToRefs, provide } from '@/common/utils';
 import { useUserStore } from '@/stores/user';
 
 const router = useRouter();

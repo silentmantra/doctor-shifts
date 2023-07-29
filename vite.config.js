@@ -4,13 +4,15 @@ import vue from '@vitejs/plugin-vue';
 import AutoImport from 'unplugin-auto-import/vite';
 import path from 'path';
 import fs from 'fs';
-import autoprefixer from 'autoprefixer';
 import { globExports, resolve } from './node-utils.mjs';
 
 export default defineConfig(async ({ command, mode, ssrBuild }) => {
 
     // collect vite plugins and apply them automatically
     const configDir = path.dirname(fileURLToPath(import.meta.url));
+
+    const globals = await globExports('./src/common/utils.js');
+    'createApp watch watchEffect onMounted onUnmounted onUpdated ref computed reactive'.words.forEach(name => globals[name] = 'vue');
 
     const importPlugins = dir => Promise.all(
         fs
@@ -36,22 +38,21 @@ export default defineConfig(async ({ command, mode, ssrBuild }) => {
             vue(),
             AutoImport({
                 imports: [
-                    'vue',
                     'vue-router',
                     {
                         'vue-router': ['createRouter', 'createWebHashHistory'],
                     }
                 ],
-                // resolvers: [
-                //     name => {
-                //         if (name === 'constructor' || name === 'default') {
-                //             return;
-                //         }
-                //         if (globals[name]) {
-                //             return { name, from: '@frontend/utils' };
-                //         }
-                //     }
-                // ]
+                resolvers: [
+                    name => {
+                        if (name === 'constructor' || name === 'default') {
+                            return;
+                        }
+                        if (globals[name]) {
+                            return { name, from: globals[name] };
+                        }
+                    }
+                ]
             })
         ],
         server: {

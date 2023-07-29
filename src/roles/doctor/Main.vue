@@ -1,6 +1,5 @@
 <script setup>
 
-import { overlaps, formatDate, formatWeek } from '@/common/utils';
 import { useUserStore } from '@/stores/user';
 
 const store = useUserStore();

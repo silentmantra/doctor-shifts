@@ -1,7 +1,5 @@
 <script setup>
 
-import { formatDate, propsToRefs, watchPost } from '@/common/utils';
-
 defineProps({
     date: Date
 });

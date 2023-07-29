@@ -1,7 +1,5 @@
 <script setup>
 
-import { propsToRefs } from '@/common/utils';
-
 defineProps({
     to: String,
     disabled: Boolean

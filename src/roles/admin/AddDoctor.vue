@@ -1,6 +1,5 @@
 <script setup>
 
-import { inject } from '@/common/utils';
 import { useUserStore } from '@/stores/user';
 
 const { selection } = inject('selection');
