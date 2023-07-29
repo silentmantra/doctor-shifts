@@ -29,7 +29,7 @@ function close(e) {
 
 </script>
 <template>
-    <dialog class="relative overflow-visible" ref="dialog" @click="close" @close="$emit('close')">
+    <dialog ref="dialog" @click="close" @close="$emit('close')">
         <div v-if="closable" ref="closeButton" @click="close" class="absolute round-button right-[-40px] top-[-40px]">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                 <path fill="none" d="M0 0h24v24H0z" />
@@ -59,8 +59,11 @@ function close(e) {
 <style scoped>
 
     dialog { @apply 
-        max-w-[300px] 
+        relative
+        overflow-visible
+        max-w-[350px] 
         w-full 
+        p-4
         rounded-md 
         shadow-md 
         border border-gray-100 
