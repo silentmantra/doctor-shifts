@@ -1,7 +1,5 @@
 <script setup>
 
-import { useUserStore } from '@/stores/user';
-
 const store = useUserStore();
 
 const doctor = reactive(store.getDoctor(parseInt(localStorage.userId)));

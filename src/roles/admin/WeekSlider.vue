@@ -1,7 +1,5 @@
 <script setup>
 
-import { formatWeek, propsToRefs, watchPost } from '@/common/utils';
-
 defineProps({
     date:Date
 });

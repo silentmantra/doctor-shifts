@@ -1,7 +1,5 @@
 <script setup>
 
-import { useModel } from '@/common/useModel';
-
 const props = defineProps({
     modelValue: String,
     items: Object

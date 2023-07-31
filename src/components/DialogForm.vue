@@ -44,13 +44,13 @@ function close(e) {
         </div>
         <form ref="form" @keyup="isValid = form.checkValidity()" @change="isValid = form.checkValidity()"
             @submit.prevent="submit">
-            <h1>{{ props.title }}</h1>
+            <h1>{{ title }}</h1>
             <div>
                 <div class="mb-3">
                     <slot></slot>
                 </div>
                 <div>
-                    <button :disabled="!isValid">{{ props.submitLabel }}</button>
+                    <button :disabled="!isValid">{{ submitLabel }}</button>
                 </div>
                 <div class="py-5">
                     <img class="inline relative left-[-7px] h-[30px]" src="../assets/logo.png" />

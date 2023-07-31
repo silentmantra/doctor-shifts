@@ -1,5 +1,3 @@
-import { glob } from './node-utils.mjs';
-import './index.js';
 
 // auto-import components in templates (unplugin-vue-components is dump and doesnt react to moving / new files)
 

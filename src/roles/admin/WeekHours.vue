@@ -1,7 +1,5 @@
 <script setup>
 
-import { useUserStore } from '@/stores/user';
-
 const router = useRouter();
 const store = useUserStore();
 

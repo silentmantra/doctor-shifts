@@ -1,7 +1,5 @@
 <script setup>
 
-import { useUserStore } from '@/stores/user';
-
 const { users } = useUserStore();
 
 const id = ref();

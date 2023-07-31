@@ -1,7 +1,5 @@
 <script setup>
 
-import { useModel } from '@/common/useModel';
-
 defineProps({
     modelValue: Boolean
 });

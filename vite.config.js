@@ -4,7 +4,8 @@ import vue from '@vitejs/plugin-vue';
 import AutoImport from 'unplugin-auto-import/vite';
 import path from 'path';
 import fs from 'fs';
-import { globExports, resolve } from './node-utils.mjs';
+import { globExports } from './node-utils.mjs';
+import './index.js';
 
 export default defineConfig(async ({ command, mode, ssrBuild }) => {
 
@@ -12,7 +13,7 @@ export default defineConfig(async ({ command, mode, ssrBuild }) => {
     const configDir = path.dirname(fileURLToPath(import.meta.url));
 
     const globals = await globExports('./src/common/utils.js');
-    'createApp watch watchEffect onMounted onUnmounted onUpdated ref computed reactive'.words.forEach(name => globals[name] = 'vue');
+    'createApp watch watchEffect onMounted onUnmounted onUpdated ref unref computed reactive'.words.forEach(name => globals[name] = 'vue');
 
     const importPlugins = dir => Promise.all(
         fs
@@ -40,7 +41,8 @@ export default defineConfig(async ({ command, mode, ssrBuild }) => {
                 imports: [
                     'vue-router',
                     {
-                        'vue-router': ['createRouter', 'createWebHashHistory'],
+                        'vue-router': ['createWebHashHistory'],
+                        '@/stores/user': ['useUserStore']
                     }
                 ],
                 resolvers: [

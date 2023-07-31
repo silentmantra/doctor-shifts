@@ -5,7 +5,6 @@ import './common/date';
 
 import { createPinia } from 'pinia';
 import { RouterView as App } from 'vue-router';
-import { createRouter, formatDate } from '@/common/utils';
 
 (async () => {
 
@@ -24,7 +23,7 @@ import { createRouter, formatDate } from '@/common/utils';
     const app = createApp(App);
 
     Object.assign(app.config.globalProperties, {
-        formatDate
+        formatDate, formatWeek, formatHour, getScrollbarWidth
     });
 
     app.use(router)
