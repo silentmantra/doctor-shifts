@@ -94,7 +94,7 @@ const data = computed(() => {
             <checkbox-select v-model="displayMode"
                 :items="selection.length ? { all: 'Показать всех', selected: 'Показать выбранных ( ' + selection.length + ' )' } : { all: 'Показать всех' }">
             </checkbox-select>
-            <button v-if="selection.length" @click="selection.clear()">Сбросить</button>
+            <button v-if="selection.length" @click="selection.length = 0">Сбросить</button>
             <span class="float-right">
                 <router-link :to="{ name: 'week-hours' }"><button>Переключиться на недели</button></router-link>
             </span>

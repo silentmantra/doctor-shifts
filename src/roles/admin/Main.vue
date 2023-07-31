@@ -1,5 +1,6 @@
 <script setup>
 
+const router = useRouter();
 const store = useUserStore();
 
 defineProps({
@@ -32,7 +33,7 @@ watch(selection, selection => {
             <div class="[&>*]:mr-3">
                 <button @click="addDoctor = true">Добавить врача</button>
                 <button @click="store.generate()">Сгенерировать</button>
-                <button @click="selection.clear(); store.clear()">Очистить</button>
+                <button @click="selection.length = 0; store.clear()">Очистить</button>
             </div>
         </template>
         <router-view></router-view>
