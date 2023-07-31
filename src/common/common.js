@@ -43,11 +43,6 @@ Array.prototype.max = function (what, outWhat) {
     return out || max;
 };
 
-Array.prototype.clear = function () {
-    this.splice(0, this.length);
-    return this;
-};
-
 {
 
     let map = Array.prototype.map;

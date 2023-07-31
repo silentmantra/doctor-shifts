@@ -168,7 +168,7 @@ export const useUserStore = defineStore('user', () => {
     }
 
     function clear() {
-        doctors.splice(0, doctors.length);
+        doctors.length = 0;
     }
 
 });

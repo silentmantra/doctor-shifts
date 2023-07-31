@@ -1,6 +1,23 @@
 import { watch, toRef, reactive, getCurrentInstance, provide as provideVue, inject as injectVue } from 'vue';
 import { createRouter as createVueRouter, createWebHistory } from 'vue-router';
 
+export function useModel() {
+
+    const self = getCurrentInstance();
+
+    const value = computed({
+        get() {
+            return unref(self.props.modelValue);
+        },
+        set(value) {
+            return self.emit('update:modelValue', value);
+        }
+    });
+
+    return value;
+
+}
+
 export function provide(list) {
     for (const name in list) {
         provideVue(name, list[name]);

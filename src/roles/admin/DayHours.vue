@@ -1,16 +1,5 @@
 <script setup>
 
-import { computed, reactive, ref } from 'vue';
-import { inject, overlaps } from '@/common/utils';
-import { RouterLink, useRouter } from 'vue-router';
-
-import ShiftHours from '@/components/ShiftHours.vue';
-import CheckboxSelect from '@/components/CheckboxSelect.vue';
-import DateSlider from './DateSlider.vue';
-import DynamicTeleport from '../../components/DynamicTeleport.vue';
-
-import { useUserStore } from '@/stores/user';
-
 const router = useRouter();
 const store = useUserStore();
 
@@ -98,25 +87,24 @@ const data = computed(() => {
 </script>
 
 <template>
-
-    <DynamicTeleport to="#fixed">
+    <dynamic-teleport to="#fixed">
 
         <div class="mt-2 [&>*]:mr-3">
             <input class="py-1" v-model="search" placeholder="Фильтр" />
-            <CheckboxSelect v-model="displayMode"
-                :items="selection.length ? {all: 'Показать всех', selected: 'Показать выбранных ( ' + selection.length + ' )'} : {all: 'Показать всех'}" />
-            <button v-if="selection.length" @click="selection.clear()">Сбросить</button> 
+            <checkbox-select v-model="displayMode"
+                :items="selection.length ? { all: 'Показать всех', selected: 'Показать выбранных ( ' + selection.length + ' )' } : { all: 'Показать всех' }">
+            </checkbox-select>
+            <button v-if="selection.length" @click="selection.length = 0">Сбросить</button>
             <span class="float-right">
-                <RouterLink :to="{name: 'week-hours'}"><button>Переключиться на недели</button></RouterLink>
+                <router-link :to="{ name: 'week-hours' }"><button>Переключиться на недели</button></router-link>
             </span>
         </div>
 
-        <DateSlider :date="currentDate" @date="changeDate" />
+        <date-slider :date="currentDate" @date="changeDate"></date-slider>
 
-    </DynamicTeleport>
+    </dynamic-teleport>
 
-    <ShiftHours v-bind="{ data, selectable:true }" />
-
+    <shift-hours v-bind="{ data, selectable: true }"></shift-hours>
 </template>
 
 <style scoped>

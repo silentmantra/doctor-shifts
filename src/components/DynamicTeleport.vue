@@ -1,9 +1,9 @@
 <script setup>
 
-import { ref, onMounted, onUpdated } from 'vue';
-import { propsToRefs } from '@/common/utils';
-
-defineProps('to disabled'.words);
+defineProps({
+    to: String,
+    disabled: Boolean
+});
 
 const { to, disabled } = propsToRefs();
 
@@ -13,7 +13,7 @@ onMounted(() => target.value = document.querySelector(to.value));
 
 let resized = false;
 
-onUpdated(()=> {
+onUpdated(() => {
     if (resized) {
         return;
     }
@@ -24,7 +24,7 @@ onUpdated(()=> {
 </script>
 
 <template>
-    <Teleport :to="target" :disabled="!target || disabled">
+    <teleport :to="target" :disabled="!target || disabled">
         <slot></slot>
-    </Teleport>
+    </teleport>
 </template>

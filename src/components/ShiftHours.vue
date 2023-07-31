@@ -1,12 +1,10 @@
 <script setup>
 
-import { ref, watch, computed, onMounted } from 'vue';
-import { overlaps, getScrollbarWidth, watchPost, formatHour, propsToRefs } from '@/common/utils';
-import DynamicTeleport from './DynamicTeleport.vue';
-import Checkbox from './Checkbox.vue';
-import { useUserStore } from '@/stores/user';
+defineProps({
+    data: Object,
+    selectable: Boolean
+});
 
-defineProps('data selectable'.words);
 const { data, selectable } = propsToRefs();
 
 const store = useUserStore();
@@ -76,15 +74,15 @@ function toggleHour(schedule) {
 
 </script>
 <template>
-    <DynamicTeleport to="#fixed">
+    <dynamic-teleport to="#fixed">
 
         <table class="w-full">
             <tr>
                 <td ref="hoursTitle">
-                    <Checkbox v-if="false && someSelected" v-model="someSelected" class="ml-2">
+                    <checkbox v-if="false && someSelected" v-model="someSelected" class="ml-2">
                         <span v-if="someSelected">Сбросить</span>
                         <span v-else>Восстановить</span>
-                    </Checkbox>
+                    </checkbox>
                 </td>
                 <td class="relative">
                     <ul class="flex border-b border-gray-200">
@@ -94,22 +92,22 @@ function toggleHour(schedule) {
                                 :class="{
                                     'border-gray-200': n % 6 !== 0,
                                     'border-gray-300': n % 6 === 0,
-                                    'bg-indigo-50': n >= 0 && n < 6, 
+                                    'bg-indigo-50': n >= 0 && n < 6,
                                     'bg-green-50': n >= 6 && n < 12,
                                     'bg-yellow-50': n >= 12 && n < 18,
-                                    'bg-orange-50' : n >= 18 && n < 24
+                                    'bg-orange-50': n >= 18 && n < 24
                                 }">
                             </div>
                             <div class="relative py-2 transition-colors border-b"
-                                :class=" !data.hours[n] ? 'bg-red-500 text-white' : '' ">{{ formatHour(n) }}</div>
+                                :class="!data.hours[n] ? 'bg-red-500 text-white' : ''">{{ formatHour(n) }}</div>
                         </li>
                     </ul>
                 </td>
-                <td :style="{width: getScrollbarWidth() + 'px'}"></td>
+                <td :style="{ width: getScrollbarWidth() + 'px' }"></td>
             </tr>
         </table>
 
-    </DynamicTeleport>
+    </dynamic-teleport>
 
     <table class="relative z-10">
         <tr v-for="schedule of data.list" :key="schedule.id"
@@ -125,9 +123,9 @@ function toggleHour(schedule) {
             </template>
             <template v-else>
                 <td ref="doctorTitle" class="whitespace-nowrap px-2">
-                    <Checkbox class="!block" v-if="selectable" v-model="schedule.selected"><span
+                    <checkbox class="!block" v-if="selectable" v-model="schedule.selected"><span
                             v-html="schedule.title"></span>
-                    </Checkbox>
+                    </checkbox>
                     <span v-else v-html="schedule.title"></span>
                 </td>
                 <td @mousemove="onMousemove" @click="toggleHour(schedule)"
@@ -141,7 +139,7 @@ function toggleHour(schedule) {
                             }"></li>
                     </ul>
                     <div style="width: calc(100% / 24)"
-                        :style="{left: hoverPos + 'px'}"
+                        :style="{ left: hoverPos + 'px' }"
                         class="top-0 text-center absolute group-hover:block hidden h-[100%] border border-gray-300 bg-[rgba(255,255,0,.3)]">
                         <span class="hidden text-3xl relative top-[-7px] text-[rgba(0,0,0,.5)]">{{ formatHour(hoverHour)
                         }}</span>
@@ -154,5 +152,4 @@ function toggleHour(schedule) {
             <td></td>
         </tr>
     </table>
-
 </template>

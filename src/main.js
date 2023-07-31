@@ -3,25 +3,33 @@ import './assets/main.css';
 import './common/common';
 import './common/date';
 
-import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import App from '@/components/App.vue';
-import { createRouter } from '@/common/utils';
+import { RouterView as App } from 'vue-router';
 
+(async () => {
 
-const userId = parseInt(localStorage.userId || 0);
-let router;
-try {
-    ({ router } = await import(`./roles/${userId > 1 ? 'doctor' : userId ? 'admin' : 'guest'}/router.js`));
-} catch (e) {
-    router = createRouter({
-        path: '/',
-        name: 'main',
-        component: () => import(`./roles/${userId > 1 ? 'doctor' : userId ? 'admin' : 'guest'}/Main.vue`)
+    const userId = parseInt(localStorage.userId || 0);
+    let router;
+    try {
+        ({ router } = await import(`./roles/${userId > 1 ? 'doctor' : userId ? 'admin' : 'guest'}/router.js`));
+    } catch (e) {
+        router = createRouter({
+            path: '/',
+            name: 'main',
+            component: () => import(`./roles/${userId > 1 ? 'doctor' : userId ? 'admin' : 'guest'}/Main.vue`)
+        });
+    }
+
+    const app = createApp(App);
+
+    Object.assign(app.config.globalProperties, {
+        formatDate, formatWeek, formatHour, getScrollbarWidth
     });
-}
 
-createApp(App)
-    .use(router)
-    .use(createPinia())
-    .mount('#app');
+    app.use(router)
+        .use(createPinia())
+        .mount('#app');
+
+
+})();
+

@@ -1,9 +1,9 @@
 <script setup>
 
-import { reactive, onMounted, ref, watch } from 'vue';
-import { formatWeek, propsToRefs, watchPost } from '@/common/utils';
+defineProps({
+    date:Date
+});
 
-defineProps('date'.words);
 const { date } = propsToRefs();
 
 const WEEK_COUNT = 4;
